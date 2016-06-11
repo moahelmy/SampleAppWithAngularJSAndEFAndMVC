@@ -8,14 +8,14 @@ using System.Linq;
 
 namespace Courses.Services
 {
-    public abstract class BaseService<T, TEntity, TRepository>
+    public abstract class CrudService<T, TEntity, TRepository>
         where T : EntityDto
         where TEntity : BaseEntity
         where TRepository : ILookupRepository<TEntity>
     {
         protected readonly TRepository _repository;        
 
-        public BaseService(TRepository repository)
+        public CrudService(TRepository repository)
         {
             _repository = repository;
         }
@@ -25,7 +25,7 @@ namespace Courses.Services
             return _repository.List().Select(ToDto).ToList();
         }
 
-        public virtual T GetIfExists(Guid id)
+        public virtual T Get(Guid id)
         {
             var result = GetEntity(id);
             if (!result.Succeed)
@@ -33,7 +33,7 @@ namespace Courses.Services
             return ToDto(result.Return);
         }
 
-        public virtual IResult<TEntity> Add(T value)
+        public virtual IResult<TEntity> Create(T value)
         {
             var entity = ToEntity(value);
             var addRes = _repository.Add(entity);
@@ -71,13 +71,13 @@ namespace Courses.Services
         protected abstract T UpdateDtoFromEntity(T dto, TEntity entity);
         protected abstract TEntity UpdateEntityFromDto(TEntity entity, T dto);
 
-        private T ToDto(TEntity entity)
+        protected T ToDto(TEntity entity)
         {
             var dto = Activator.CreateInstance<T>();
             UpdateDtoFromEntity(dto, entity);
             return dto;
         }
-        private TEntity ToEntity(T dto)
+        protected TEntity ToEntity(T dto)
         {
             var entity = Activator.CreateInstance<TEntity>();
             UpdateEntityFromDto(entity, dto);

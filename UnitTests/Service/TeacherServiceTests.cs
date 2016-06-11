@@ -32,26 +32,26 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void GetIfExists_Found_ReturnIt()
+        public void Get_Found_ReturnIt()
         {
             // Arrange
             var teacher = TeachersRepository.FoundEntity();
 
             // Act
-            var result = _service.GetIfExists(teacher.Id);
+            var result = _service.Get(teacher.Id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
         }
 
         [Test]
-        public void GetIfExists_NotFound_ReturnNull()
+        public void Get_NotFound_ReturnNull()
         {
             // Arrange
             var id = TeachersRepository.NotFoundEntity();
 
             // Act
-            var result = _service.GetIfExists(id);
+            var result = _service.Get(id);
 
             // Assert
             Assert.That(result, Is.Null);

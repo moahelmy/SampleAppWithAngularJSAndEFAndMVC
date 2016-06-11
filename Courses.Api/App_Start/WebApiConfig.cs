@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Web.Http;
+﻿using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
-using Newtonsoft.Json.Serialization;
+using Courses.Api.Filters;
 
 namespace Courses.Api
 {
@@ -25,6 +21,10 @@ namespace Courses.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            // filters
+            config.Filters.Add(new ErrorFilterAttribute());
+            config.Filters.Add(new NotImplementedFilterAttribute());
         }
     }
 }

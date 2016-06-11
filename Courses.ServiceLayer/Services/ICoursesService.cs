@@ -9,7 +9,8 @@ namespace Courses.Services
     public interface ICoursesService
     {
         IReadOnlyCollection<CourseDetails> ListAll();
-        IResult<Course> Add(CourseDetails course);
+        CourseDetails Get(Guid id);
+        IResult<Course> Create(CourseDetails course);
         IResult<Course> Update(CourseDetails courseDetails);
         IResult<Course> Delete(Guid id);
     }

@@ -10,7 +10,7 @@ namespace Courses.Domain.Entities
 {
     public class Course : BaseEntity
     {
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 
         [Required]

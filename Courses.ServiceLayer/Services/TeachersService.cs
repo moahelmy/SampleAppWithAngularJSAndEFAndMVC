@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Courses.Domain.Entities;
 using Courses.Domain.Repositories;
 using Swart.DomainDrivenDesign;
@@ -8,7 +6,7 @@ using Courses.DataTransferObjects;
 
 namespace Courses.Services
 {
-    public class TeachersService : BaseService<IdNamePair, Teacher, ITeachersRepository>, ITeachersService
+    public class TeachersService : CrudService<IdNamePair, Teacher, ITeachersRepository>, ITeachersService
     {
         public TeachersService(ITeachersRepository teachersRepository) : base(teachersRepository)
         {

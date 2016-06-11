@@ -20,7 +20,7 @@ namespace Courses.Domain.Entities
                 return age;
             }
         }
-
+        
         public double GPA { get; set; }
         public bool IsExcellent { get { return GPA > 3.2; } }
 

@@ -4,10 +4,10 @@ namespace Courses.Domain.Entities
 {
     public class Location:BaseValueObject
     {
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string RoomNumber { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string BuildingNumber { get; set; }
     }
 }

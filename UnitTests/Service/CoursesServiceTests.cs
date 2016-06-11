@@ -174,7 +174,7 @@ namespace UnitTests.Service
             _TeacherNotFound_Fail(id =>
             {
                 CourseDetails.Teacher.Id = id;
-                return Service.Add(CourseDetails);
+                return Service.Create(CourseDetails);
             });
         }
 
@@ -184,7 +184,7 @@ namespace UnitTests.Service
             _TeacherFound_TeacherNameUpdated(id =>
             {
                 CourseDetails.Teacher.Id = id;
-                Service.Add(CourseDetails);
+                Service.Create(CourseDetails);
                 return CourseDetails.Teacher.Name;
             });
         }
@@ -195,7 +195,7 @@ namespace UnitTests.Service
             _TeacherIdIsEmpty_CreateTeacher(teacher =>
             {
                 CourseDetails.Teacher = teacher;
-                var res = Service.Add(CourseDetails);
+                var res = Service.Create(CourseDetails);
                 return res.Return;
             });
         }
@@ -208,7 +208,7 @@ namespace UnitTests.Service
             CourseDetails.Teacher.Id = teacher.Id;
 
             // Act
-            var result = Service.Add(CourseDetails);
+            var result = Service.Create(CourseDetails);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -223,7 +223,7 @@ namespace UnitTests.Service
             CourseDetails.Teacher.Id = teacher.Id;
 
             // Act
-            Service.Add(CourseDetails);
+            Service.Create(CourseDetails);
 
             // Assert
             CoursesRepository.Received().Add(Arg.Any<Course>());
@@ -237,7 +237,7 @@ namespace UnitTests.Service
             CourseDetails.Teacher.Id = teacher.Id;
 
             // Act
-            Service.Add(CourseDetails);
+            Service.Create(CourseDetails);
 
             // Assert
             UnitOfWork.Received().SaveChanges();

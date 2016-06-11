@@ -19,7 +19,35 @@ namespace Courses.Services
             _teachersRepository = teachersRepository;
         }
 
-        public IResult<Course> Add(CourseDetails courseDetails)
+        public IReadOnlyCollection<CourseDetails> ListAll()
+        {
+            return _coursesRepository.List().Select(x => new CourseDetails
+            {
+                Id = x.Id,
+                Name = x.Name,
+                BuildingNumber = x.Location.BuildingNumber,
+                RoomNumber = x.Location.RoomNumber,
+                Teacher = new IdNamePair { Id = x.Teacher.Id, Name = x.Teacher.FullName },
+            }).ToList();
+        }
+
+        public CourseDetails Get(Guid id)
+        {
+            var result = _coursesRepository.Get(id);
+            if (!result.Succeed)
+                return null;
+            var course = result.Return;
+            return new CourseDetails
+            {
+                Id = course.Id,
+                Name = course.Name,
+                BuildingNumber = course.Location.BuildingNumber,
+                RoomNumber = course.Location.RoomNumber,
+                Teacher = new IdNamePair { Id = course.Teacher.Id, Name = course.Teacher.FullName },
+            };
+        }
+
+        public IResult<Course> Create(CourseDetails courseDetails)
         {
             var ret = new Result<Course>();
             var teacherRes = _UpdateTeacher(courseDetails);
@@ -55,19 +83,7 @@ namespace Courses.Services
             if (result.Succeed)
                 _coursesRepository.UnitOfWork.SaveChanges();
             return result;
-        }
-
-        public IReadOnlyCollection<CourseDetails> ListAll()
-        {
-            return _coursesRepository.List().Select(x => new CourseDetails
-            {
-                Id = x.Id,
-                Name = x.Name,
-                BuildingNumber = x.Location.BuildingNumber,
-                RoomNumber = x.Location.RoomNumber,
-                Teacher = new IdNamePair { Id = x.Teacher.Id, Name = x.Teacher.FullName },
-            }).ToList();
-        }
+        }        
 
         public IResult<Course> Update(CourseDetails courseDetails)
         {

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Courses.DataTransferObjects;
 using Courses.Domain.Entities;
-using Swart.DomainDrivenDesign;
 using Courses.Domain.Repositories;
-using Courses.DataTransferObjects;
+using Swart.DomainDrivenDesign;
+using System;
+using System.Linq;
 
 namespace Courses.Services
 {
-    public class StudentsService : BaseService<StudentDetails, Student, IStudentsRepository>, IStudentsService
+    public class StudentsService : CrudService<StudentDetails, Student, IStudentsRepository>, IStudentsService
     {
         private readonly ICoursesRepository _coursesRepository;        
 
@@ -15,20 +16,20 @@ namespace Courses.Services
             _coursesRepository = coursesRepo;            
         }
 
-        public IResult<Student> AddStudentToCourse(StudentDetails student, Guid courseId)
+        public IResult<Student> Create(StudentDetails student, Guid courseId)
         {
-            if(student.Id == Guid.Empty)
+            if(student.Id != Guid.Empty)
             {
-                var addedStudent = Add(student);
-                if (addedStudent.Succeed)
-                    return AddStudentToCourse(Add(student).Return.Id, courseId);
-                else
-                    return addedStudent;
+                return new Result<Student>().AddErrorMessage("Id must be empty");
             }
 
-            return AddStudentToCourse(student.Id, courseId);
+            var addedStudent = Create(student);
+            if (addedStudent.Succeed)
+                return Enrol(Create(student).Return.Id, courseId);
+            else
+                return addedStudent;
         }
-        public IResult<Student> AddStudentToCourse(Guid studentId, Guid courseId)
+        public IResult<Student> Enrol(Guid studentId, Guid courseId)
         {
             if(courseId == Guid.Empty)
                 return new Result<Student>().AddErrorMessage("Course id is empty");
@@ -56,11 +57,14 @@ namespace Courses.Services
         //    return result;
         //}
 
-        public IListResult<Student> GetCourseStudents(Guid courseId)
+        public IListResult<StudentDetails> GetCourseStudents(Guid courseId)
         {
             if (courseId == Guid.Empty)
-                return new ListResult<Student>().AddErrorMessage("Course id is empty");
-            return _coursesRepository.GetStudents(courseId);
+                return new ListResult<StudentDetails>().AddErrorMessage("Course id is empty");
+            var result = _coursesRepository.GetStudents(courseId);
+            if (result.Succeed)
+                return new ListResult<StudentDetails> { Return = result.Return.Select(s => ToDto(s)).ToList() };
+            return new ListResult<StudentDetails> { Messages = result.Messages };
         }
 
         public IResult<Student> RemoveStudentFromCourse(Guid studentId, Guid courseId)
@@ -108,6 +112,7 @@ namespace Courses.Services
             dto.BirthDate = entity.BirthDate;
             dto.Age = entity.Age;
             dto.GPA = entity.GPA;
+            dto.IsExcellent = entity.IsExcellent;
 
             return dto;
         }

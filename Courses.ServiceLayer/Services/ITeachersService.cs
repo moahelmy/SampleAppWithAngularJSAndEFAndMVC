@@ -12,6 +12,6 @@ namespace Courses.Services
         IResult<Teacher> Add(string fullName);
         IResult<Teacher> Update(Guid id, string fullName);
         IResult<Teacher> Delete(Guid id);
-        IdNamePair GetIfExists(Guid id);
+        IdNamePair Get(Guid id);
     }
 }

@@ -22,7 +22,7 @@ namespace UnitTests.Service
             _service = new StudentsService(CoursesRepository, StudentsRepository);            
         }
 
-        #region GetStudents
+        #region GetS tudents
         [Test]
         public void GetCourseStudents_CourseFound_ListStudents()
         {
@@ -59,16 +59,32 @@ namespace UnitTests.Service
         }
         #endregion
 
-        #region AddStudentToCourse
+        #region Create Student
         [Test]
-        public void AddStudentToCourse_CourseIdIsEmpty_Fail()
+        public void Create_StudentIdNotEmpty_Fail()
+        {
+            // Arrange
+            var course = CoursesRepository.FoundEntity();
+
+            // Act
+            var result = _service.Create(new StudentDetails { Id = Guid.NewGuid() }, course.Id);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Succeed, Is.False);
+        }
+        #endregion
+
+        #region Entrol Student in Course
+        [Test]
+        public void Enrol_CourseIdIsEmpty_Fail()
         {
             // Arrange
             var courseId = Guid.Empty;
             var student = StudentsRepository.FoundEntity();
 
             // Act
-            var result = _service.AddStudentToCourse(student.Id, courseId);
+            var result = _service.Enrol(student.Id, courseId);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -76,14 +92,14 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void AddStudentToCourse_StudentIdIsEmpty_Fail()
+        public void Enrol_StudentIdIsEmpty_Fail()
         {
             // Arrange
             var course = CoursesRepository.FoundEntity();
             var studentId = Guid.Empty;
 
             // Act
-            var result = _service.AddStudentToCourse(studentId, course.Id);
+            var result = _service.Enrol(studentId, course.Id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -91,14 +107,14 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void AddStudentToCourse_CourseNotFound_Fail()
+        public void Enrol_CourseNotFound_Fail()
         {
             // Arrange
             var courseId = CoursesRepository.NotFoundEntity();
             var student = StudentsRepository.FoundEntity();
 
             // Act
-            var result = _service.AddStudentToCourse(student.Id, courseId);
+            var result = _service.Enrol(student.Id, courseId);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -106,28 +122,28 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void AddStudentToCourse_StudentNotFound_Fail()
+        public void Enrol_StudentNotFound_Fail()
         {
             // Arrange
             var course = CoursesRepository.FoundEntity();
             var studentId = StudentsRepository.NotFoundEntity();
 
             // Act
-            var result = _service.AddStudentToCourse(studentId, course.Id);
+            var result = _service.Enrol(studentId, course.Id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Succeed, Is.False);
         }
 
-        private dynamic AddStudentToCourse_BothFound()
+        private dynamic Enrol_BothFound()
         {
             // Arrange            
             var course = CoursesRepository.FoundEntity();
             var student = StudentsRepository.FoundEntity();
 
             // Act
-            var result = _service.AddStudentToCourse(student.Id, course.Id);
+            var result = _service.Enrol(student.Id, course.Id);
 
             return new
             {
@@ -138,11 +154,11 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void AddStudentToCourse_BothFound_Succeed()
+        public void Enrol_BothFound_Succeed()
         {
             // Arrange                        
             // Act
-            var result = AddStudentToCourse_BothFound().Result;
+            var result = Enrol_BothFound().Result;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -150,11 +166,11 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void AddStudentToCourse_BothFound_StudentAdded()
+        public void Enrol_BothFound_StudentAdded()
         {
             // Arrange            
             // Act
-            var value = AddStudentToCourse_BothFound();
+            var value = Enrol_BothFound();
             var course = value.Course;
             var student = value.Student;
 
@@ -163,20 +179,20 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void AddStudentToCourse_BothFound_Saved()
+        public void Enrol_BothFound_Saved()
         {
             // Arrange
             // Act
-            AddStudentToCourse_BothFound();
+            Enrol_BothFound();
 
             // Assert
             UnitOfWork.Received().SaveChanges();
         }
         #endregion
 
-        #region DeleteStudent        
+        #region Delete Student        
         [Test]
-        public void DeleteStudent_StudentIdIsEmpty_Fail()
+        public void Delete_StudentIdIsEmpty_Fail()
         {
             // Arrange
             var id = Guid.Empty;
@@ -190,7 +206,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void DeleteStudent_StudentNotFound_Fail()
+        public void Delete_StudentNotFound_Fail()
         {
             // Arrange
             var id = StudentsRepository.NotFoundEntity();
@@ -204,7 +220,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void DeleteStudent_StudentDeleted()
+        public void Delete_StudentDeleted()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -217,7 +233,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void DeleteStudent_CanDelete_Succeed()
+        public void Delete_CanDelete_Succeed()
         {
             // Arrange
             var student = StudentsRepository.CanDelete();
@@ -231,7 +247,7 @@ namespace UnitTests.Service
         }        
 
         [Test]
-        public void DeleteStudent_StudentDeleted_Saved()
+        public void Delete_StudentDeleted_Saved()
         {
             // Arrange
             var student = StudentsRepository.CanDelete();
@@ -244,7 +260,7 @@ namespace UnitTests.Service
         }
         #endregion
 
-        #region RemoveStudentFromCourse
+        #region Remove Student From Course
         [Test]
         public void RemoveStudentFromCourse_CourseIdIsEmpty_Fail()
         {
@@ -375,9 +391,9 @@ namespace UnitTests.Service
         }
         #endregion
 
-        #region UpdateStudentDetails
+        #region Update Student Details
         [Test]
-        public void UpdateStudentDetails_StudentIsIsempty_Fail()
+        public void Update_StudentIsIsempty_Fail()
         {
             // Arrange
             var id = Guid.Empty;
@@ -394,7 +410,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void UpdateStudentDetails_StudentNotFound_Fail()
+        public void Update_StudentNotFound_Fail()
         {
             // Arrange
             var id = StudentsRepository.NotFoundEntity();
@@ -410,7 +426,7 @@ namespace UnitTests.Service
             Assert.That(result.Succeed, Is.False);
         }
 
-        private IResult<Student> UpdateStudentDetails_StudentFound(StudentDetails studentDetails)
+        private IResult<Student> Update_StudentFound(StudentDetails studentDetails)
         {
             // Arrange
             var student = StudentsRepository.FoundEntity();
@@ -423,7 +439,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void UpdateStudentDetails_StudentFound_Success()
+        public void Update_StudentFound_Success()
         {
             // Arrange
             var studentDetails = new StudentDetails
@@ -434,7 +450,7 @@ namespace UnitTests.Service
             };
 
             // Act
-            var result = UpdateStudentDetails_StudentFound(studentDetails);
+            var result = Update_StudentFound(studentDetails);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -442,7 +458,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void UpdateStudentDetails_StudentFound_Updated()
+        public void Update_StudentFound_Updated()
         {
             // Arrange
             var studentDetails = new StudentDetails
@@ -453,7 +469,7 @@ namespace UnitTests.Service
             };
 
             // Act
-            var result = UpdateStudentDetails_StudentFound(studentDetails);
+            var result = Update_StudentFound(studentDetails);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -464,7 +480,7 @@ namespace UnitTests.Service
         }
 
         [Test]
-        public void UpdateStudentDetails_StudentFound_Saved()
+        public void Update_StudentFound_Saved()
         {
             // Arrange
             var studentDetails = new StudentDetails
@@ -475,7 +491,7 @@ namespace UnitTests.Service
             };
 
             // Act
-            var result = UpdateStudentDetails_StudentFound(studentDetails);
+            var result = Update_StudentFound(studentDetails);
 
             // Assert
             UnitOfWork.Received().SaveChanges();
