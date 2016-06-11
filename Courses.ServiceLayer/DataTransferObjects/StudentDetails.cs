@@ -2,10 +2,8 @@
 
 namespace Courses.DataTransferObjects
 {
-    public class StudentDetails
+    public class StudentDetails : EntityDto
     {
-        public Guid Id { get; set; }
-
         public string FullName { get; set; }
 
         public DateTime BirthDate { get; set; }

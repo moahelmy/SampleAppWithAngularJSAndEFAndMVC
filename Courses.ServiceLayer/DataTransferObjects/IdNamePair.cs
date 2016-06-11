@@ -2,9 +2,8 @@
 
 namespace Courses.DataTransferObjects
 {
-    public class IdNamePair
-    {
-        public Guid Id { get; set; }
+    public class IdNamePair : EntityDto
+    {        
         public string Name { get; set; }
     }
 }

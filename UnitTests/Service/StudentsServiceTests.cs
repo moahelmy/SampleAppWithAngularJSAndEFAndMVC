@@ -182,7 +182,7 @@ namespace UnitTests.Service
             var id = Guid.Empty;
 
             // Act
-            var result = _service.DeleteStudent(id);
+            var result = _service.Delete(id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -196,7 +196,7 @@ namespace UnitTests.Service
             var id = StudentsRepository.NotFoundEntity();
 
             // Act
-            var result = _service.DeleteStudent(id);
+            var result = _service.Delete(id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -210,7 +210,7 @@ namespace UnitTests.Service
             var id = Guid.NewGuid();
 
             // Act
-            var result = _service.DeleteStudent(id);
+            var result = _service.Delete(id);
 
             // Assert
             StudentsRepository.Received().Delete(id);
@@ -223,7 +223,7 @@ namespace UnitTests.Service
             var student = StudentsRepository.CanDelete();
 
             // Act
-            var result = _service.DeleteStudent(student.Id);
+            var result = _service.Delete(student.Id);
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -237,7 +237,7 @@ namespace UnitTests.Service
             var student = StudentsRepository.CanDelete();
 
             // Act
-            var result = _service.DeleteStudent(student.Id);
+            var result = _service.Delete(student.Id);
 
             // Assert
             UnitOfWork.Received().SaveChanges();
@@ -383,7 +383,7 @@ namespace UnitTests.Service
             var id = Guid.Empty;
 
             // Act
-            var result = _service.UpdateStudentDetails(new StudentDetails
+            var result = _service.Update(new StudentDetails
             {
                 Id = id,
             });
@@ -400,7 +400,7 @@ namespace UnitTests.Service
             var id = StudentsRepository.NotFoundEntity();
 
             // Act
-            var result = _service.UpdateStudentDetails(new StudentDetails
+            var result = _service.Update(new StudentDetails
             {
                 Id = id,
             });
@@ -417,7 +417,7 @@ namespace UnitTests.Service
             studentDetails.Id = student.Id;
 
             //Act
-            var result = _service.UpdateStudentDetails(studentDetails);
+            var result = _service.Update(studentDetails);
 
             return result;
         }

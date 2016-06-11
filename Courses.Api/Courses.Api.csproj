@@ -206,14 +206,16 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\TeachersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\TeacherModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -280,7 +282,20 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\swart\swart.ddd\Swart.DomainDrivenDesign\Swart.DomainDrivenDesign.csproj">
+      <Project>{3af2bddb-77bd-46d0-b327-e5e03a89972b}</Project>
+      <Name>Swart.DomainDrivenDesign</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Courses.Domain\Courses.Domain.csproj">
+      <Project>{1c8e4349-a2be-49ca-bf5b-f5df1e930402}</Project>
+      <Name>Courses.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Courses.ServiceLayer\Courses.ServiceLayer.csproj">
+      <Project>{51d3912d-7158-481b-ae66-f596cd50cd60}</Project>
+      <Name>Courses.ServiceLayer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

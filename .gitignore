@@ -54,3 +54,6 @@ Temporary Items
 #Nuget Packages
 /packages/
 !packages/repositories.config
+#bin directories
+bin/
+obj/

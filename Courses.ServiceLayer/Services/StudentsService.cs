@@ -6,17 +6,28 @@ using Courses.DataTransferObjects;
 
 namespace Courses.Services
 {
-    public class StudentsService : IStudentsService
+    public class StudentsService : BaseService<StudentDetails, Student, IStudentsRepository>, IStudentsService
     {
-        private readonly ICoursesRepository _coursesRepository;
-        private readonly IStudentsRepository _studentsRepository;
+        private readonly ICoursesRepository _coursesRepository;        
 
-        public StudentsService(ICoursesRepository coursesRepo, IStudentsRepository studentsRepo)
+        public StudentsService(ICoursesRepository coursesRepo, IStudentsRepository studentsRepo): base(studentsRepo)
         {
-            _coursesRepository = coursesRepo;
-            _studentsRepository = studentsRepo;
+            _coursesRepository = coursesRepo;            
         }
 
+        public IResult<Student> AddStudentToCourse(StudentDetails student, Guid courseId)
+        {
+            if(student.Id == Guid.Empty)
+            {
+                var addedStudent = Add(student);
+                if (addedStudent.Succeed)
+                    return AddStudentToCourse(Add(student).Return.Id, courseId);
+                else
+                    return addedStudent;
+            }
+
+            return AddStudentToCourse(student.Id, courseId);
+        }
         public IResult<Student> AddStudentToCourse(Guid studentId, Guid courseId)
         {
             if(courseId == Guid.Empty)
@@ -26,7 +37,7 @@ namespace Courses.Services
             var courseResult = _coursesRepository.Get(courseId);
             if (!courseResult.Succeed)
                 return new Result<Student> ().AddErrorMessage("Course not found");
-            var studentResult = _studentsRepository.Get(studentId);
+            var studentResult = _repository.Get(studentId);
             if (!studentResult.Succeed)
                 return new Result<Student>().AddErrorMessage("Student not found");
             courseResult.Return.AddStudent(studentResult.Return);
@@ -35,15 +46,15 @@ namespace Courses.Services
             return new Result<Student> { Return = studentResult.Return };
         }
 
-        public IResult<Student> DeleteStudent(Guid id)
-        {
-            if (id == Guid.Empty)
-                return new Result<Student>().AddErrorMessage("Id is empty");
-            var result = _studentsRepository.Delete(id);
-            if (result.Succeed)
-                _studentsRepository.UnitOfWork.SaveChanges();
-            return result;
-        }
+        //public override IResult<Student> Delete(Guid id)
+        //{
+        //    if (id == Guid.Empty)
+        //        return new Result<Student>().AddErrorMessage("Id is empty");
+        //    var result = _repository.Delete(id);
+        //    if (result.Succeed)
+        //        _repository.UnitOfWork.SaveChanges();
+        //    return result;
+        //}
 
         public IListResult<Student> GetCourseStudents(Guid courseId)
         {
@@ -61,7 +72,7 @@ namespace Courses.Services
             var courseResult = _coursesRepository.Get(courseId);
             if (!courseResult.Succeed)
                 return new Result<Student>().AddErrorMessage("Course not found");
-            var studentResult = _studentsRepository.Get(studentId);
+            var studentResult = _repository.Get(studentId);
             if (!studentResult.Succeed)
                 return new Result<Student>().AddErrorMessage("Student not found");
             var result = courseResult.Return.RemoveStudent(studentResult.Return);
@@ -72,22 +83,42 @@ namespace Courses.Services
             return new Result<Student> { Return = studentResult.Return };
         }
 
-        public IResult<Student> UpdateStudentDetails(StudentDetails student)
+        //public override IResult<Student> Update(StudentDetails student)
+        //{
+        //    if (student.Id == Guid.Empty)
+        //        return new Result<Student>().AddErrorMessage("Student id is empty");
+        //    var studentResult = _repository.Get(student.Id);
+        //    if (!studentResult.Succeed)
+        //        return new Result<Student>().AddErrorMessage("Student not found");
+
+        //    var studentEntity = studentResult.Return;
+        //    studentEntity.BirthDate = student.BirthDate;
+        //    studentEntity.FullName = student.FullName;
+        //    studentEntity.GPA = student.GPA;
+
+        //    _repository.UnitOfWork.SaveChanges();
+
+        //    return new Result<Student>() { Return = studentEntity };
+        //}
+
+        protected override StudentDetails UpdateDtoFromEntity(StudentDetails dto, Student entity)
         {
-            if (student.Id == Guid.Empty)
-                return new Result<Student>().AddErrorMessage("Student id is empty");
-            var studentResult = _studentsRepository.Get(student.Id);
-            if (!studentResult.Succeed)
-                return new Result<Student>().AddErrorMessage("Student not found");
+            dto.Id = entity.Id;
+            dto.FullName = entity.FullName;
+            dto.BirthDate = entity.BirthDate;
+            dto.Age = entity.Age;
+            dto.GPA = entity.GPA;
 
-            var studentEntity = studentResult.Return;
-            studentEntity.BirthDate = student.BirthDate;
-            studentEntity.FullName = student.FullName;
-            studentEntity.GPA = student.GPA;
+            return dto;
+        }
 
-            _studentsRepository.UnitOfWork.SaveChanges();
+        protected override Student UpdateEntityFromDto(Student entity, StudentDetails dto)
+        {
+            entity.FullName = dto.FullName;
+            entity.BirthDate = dto.BirthDate;
+            entity.GPA = dto.GPA;
 
-            return new Result<Student>() { Return = studentEntity };
+            return entity;
         }
     }
 }
