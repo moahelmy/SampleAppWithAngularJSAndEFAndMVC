@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "Integra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.ServiceLayer", "Courses.ServiceLayer\Courses.ServiceLayer.csproj", "{51D3912D-7158-481B-AE66-F596CD50CD60}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Web", "Courses.Web\Courses.Web.csproj", "{2016D7C2-EFE5-411E-846A-16B9260A3A6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{51D3912D-7158-481B-AE66-F596CD50CD60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51D3912D-7158-481B-AE66-F596CD50CD60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51D3912D-7158-481B-AE66-F596CD50CD60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2016D7C2-EFE5-411E-846A-16B9260A3A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2016D7C2-EFE5-411E-846A-16B9260A3A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2016D7C2-EFE5-411E-846A-16B9260A3A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2016D7C2-EFE5-411E-846A-16B9260A3A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,5 +112,6 @@ Global
 		{5DBF655F-81E3-429B-83F1-0B2FEA2C4DE6} = {3095B980-D884-4ACA-99FD-3DC0E5D4FD38}
 		{29096892-80F6-4DB9-B4F5-3DAE78230AC5} = {3095B980-D884-4ACA-99FD-3DC0E5D4FD38}
 		{51D3912D-7158-481B-AE66-F596CD50CD60} = {3095B980-D884-4ACA-99FD-3DC0E5D4FD38}
+		{2016D7C2-EFE5-411E-846A-16B9260A3A6B} = {90D9950E-DC21-4576-A0D9-8D170A9BA3D1}
 	EndGlobalSection
 EndGlobal

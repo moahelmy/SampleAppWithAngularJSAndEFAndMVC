@@ -57,3 +57,8 @@ Temporary Items
 #bin directories
 bin/
 obj/
+# =========================
+# Frontend
+# =========================
+#node
+node_modules/

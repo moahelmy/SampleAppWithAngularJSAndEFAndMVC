@@ -44,9 +44,9 @@ namespace Courses.Api
         public static void RegisterLayers(ContainerBuilder builder)
         {
             // Register domain
-            builder.RegisterTypes(typeof(Course)).AsImplementedInterfaces();            
+            builder.RegisterTypes(typeof(Course)).AsImplementedInterfaces();
 
-            // Register repositories
+            // Register repositories            
             builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(TeachersRepository)))
                 .AsImplementedInterfaces()
                 .InstancePerMatchingLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
