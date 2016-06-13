@@ -19,19 +19,11 @@
         minified: './app/**/*.min.js',
         exclude: [],
         dest: './dist/styles',
-    },
-    //app: './app/**/*.js',
-    //css: './styles/**/*.css',    
-    //vendor: './vendor/vendors.js',
-    //vendorDest: './dist/vendors',
-    //appDest: './dist/app',
-    //cssDest: './dist/styles.min.css',
+    },    
 };
 
-
-
 var gulp = require('gulp'),
-    gutil = require('gulp-util'),   
+    gutil = require('gulp-util'),
     // del files
     rimraf = require('rimraf'),
     // obvious
@@ -67,7 +59,6 @@ if (config.jshint) {
 //  }
 var bundle = function (files, dest, opts) {
 
-    var pipeline = gulp.src(files);
     var isTrue = function (val) {
         return val === undefined || val === true;
     };
@@ -80,18 +71,18 @@ var bundle = function (files, dest, opts) {
             .pipe(uglify());
     };
 
+    var pipeline = gulp.src(files);
     opts = opts || {};
-    if(isTrue(opts.useJsHint) && compile)
-    {        
+    if (isTrue(opts.useJsHint) && compile) {
         pipeline = compile(pipeline);
     }
 
-    if (opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use)) {        
+    if (opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use)) {
         var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;
         if (shouldConcat) {
             pipeline = pipeline.pipe(concat(dest + '.js'));
         }
-        pipeline = pipeline.pipe(sourcemaps.init({ loadMaps: true }));        
+        pipeline = pipeline.pipe(sourcemaps.init({ loadMaps: true }));
         pipeline = minifyAndAnnotate(pipeline, shouldConcat)
                     .pipe(rename({ suffix: '.min' }))
                     .pipe(sourcemaps.write('./'));
@@ -102,20 +93,9 @@ var bundle = function (files, dest, opts) {
     }
 
     return pipeline.pipe(gulp.dest('.'));
-    //return gulp.src([config.app])
-    //    .pipe(jshint())
-    //    .pipe(jshint.reporter(stylish))
-    //    .pipe(jshint.reporter('fail'))
-    //    .pipe(sourcemaps.init({ loadMaps: true }))
-    //        .pipe(concat(config.appDest + '.js'))    
-    //        .pipe(ngAnnotate())
-    //        .pipe(uglify())
-    //        .pipe(rename({ suffix: '.min' }))
-    //    .pipe(sourcemaps.write('./'))
-    //    .pipe(gulp.dest('.'));
 };
 
-if (config.bundleVendors) {    
+if (config.bundleVendors) {
 
     // browserify
     if (config.browserify) {
@@ -161,7 +141,7 @@ if (config.bundleVendors) {
                 return relativeUrl;
             }
 
-            var b = shouldWatch ? watchify(browserify(config.vendor, opt)) : browserify(config.vendor, opt);
+            var b = shouldWatch ? watchify(browserify(config.vendors.main, opt)) : browserify(config.vendors.main, opt);
 
             return b.transform(browserifyCss, {
                 autoInject: true,
@@ -189,7 +169,7 @@ if (config.bundleVendors) {
     }
     else {
         bundleVendors = function () {
-            return bundle(config.vendors.list, config.vendors.dest, { useJsHint: false});
+            return bundle(config.vendors.list, config.vendors.dest, { useJsHint: false });
         };
 
         watchVendors = function () {
@@ -207,37 +187,34 @@ gulp.task('clean:js', function (cb) {
 });
 
 gulp.task('clean-vendor:js', function (cb) {
-    config.bundleVendors && rimraf(config.vendors.dest + '.*.js*', cb);    
+    config.bundleVendors && rimraf(config.vendors.dest + '.*.js*', cb);
 });
 
 gulp.task('clean', ['clean:js', 'clean-vendor:js', 'clean:css']);
 
 gulp.task('scripts', ['clean:js'], function () {
-    // replace src with aray to exclude min and start with modules
     var src = [config.app.ngModules, config.app.src, '!' + config.app.minified];
+    var exc = config.app.exclude.map(function (f) {
+        return (f.startsWith('!') ? '' : '!') + f;
+    });
+    src = src.concat(exc);
     return bundle(src, config.app.dest);
-    //return gulp.src([config.app])
-    //    .pipe(jshint())
-    //    .pipe(jshint.reporter(stylish))
-    //    .pipe(jshint.reporter('fail'))
-    //    .pipe(sourcemaps.init({ loadMaps: true }))
-    //        .pipe(concat(config.appDest + '.js'))
-    //        .pipe(gulp.dest('.'))
-    //        .pipe(ngAnnotate())
-    //        .pipe(uglify())
-    //        .pipe(rename({ suffix: '.min' }))
-    //    .pipe(sourcemaps.write('./'))
-    //    .pipe(gulp.dest('.'));
 });
 
 gulp.task('styles', ['clean:css'], function () {
-    return gulp.src([config.css.src])
+    var src = [config.css.src, '!' + config.css.minified];
+    var exc = config.css.exclude.map(function (f) {
+        return (f.startsWith('!') ? '' : '!') + f;
+    });
+    src = src.concat(exc);
+
+    return gulp.src(src)
         .pipe(concat(config.css.dest + '.min.css'))
         .pipe(cssmin())
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('vendors', ['clean-vendor:js'], function () {    
+gulp.task('vendors', ['clean-vendor:js'], function () {
     return config.bundleVendors && bundleVendors && bundleVendors();
 });
 
