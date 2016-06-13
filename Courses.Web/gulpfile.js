@@ -1,8 +1,37 @@
-﻿var gulp = require('gulp'),
-    gutil = require('gulp-util'),
-    // jshint
-    jshint = require('gulp-jshint'),
-    stylish = require('jshint-stylish'),
+﻿var config = {
+    bundleVendors: true,
+    jshint: true,
+    browserify: true,
+    vendors: {
+        main: 'vendor/vendors.js',
+        list: [],        
+        dest: 'dist/vendors',
+    },
+    app: {
+        ngModules: 'app/**/*.module.js',
+        src: 'app/**/*.js',
+        minified: 'app/**/*.min.js',
+        exclude: [],
+        dest: 'dist/app',
+    },
+    css: {
+        src: './app/**/*.js',
+        minified: './app/**/*.min.js',
+        exclude: [],
+        dest: './dist/styles',
+    },
+    //app: './app/**/*.js',
+    //css: './styles/**/*.css',    
+    //vendor: './vendor/vendors.js',
+    //vendorDest: './dist/vendors',
+    //appDest: './dist/app',
+    //cssDest: './dist/styles.min.css',
+};
+
+
+
+var gulp = require('gulp'),
+    gutil = require('gulp-util'),   
     // del files
     rimraf = require('rimraf'),
     // obvious
@@ -14,119 +43,208 @@
     sourcemaps = require('gulp-sourcemaps'),
     // add dependency injects for angular - write "ngInject"; at top of functions to use this
     ngAnnotate = require('gulp-ng-annotate'),
-    // browserify
-    watchify = require('watchify'),
-    browserify = require('browserify'),
-    // convert browserify into stream that gulp understands
-    source = require('vinyl-source-stream'),    
-    buffer = require('vinyl-buffer'),
-    // to import css files of libraries as well
-    browserifyCss = require('browserify-css'),
-    path = require('path'),
-    fse = require('fs-extra');
+    bundleVendors, watchVendors;
 
-var config = {
-    app: './app/**/*.js',
-    css: './styles/**/*.css',
-    vendor: './vendor/vendors.js',
-    vendorDest: './vendors',    
-    appDest: './app',
-    cssDest: './styles.css',
+// jshint
+if (config.jshint) {
+    var jshint = require('gulp-jshint'),
+        stylish = require('jshint-stylish');
+
+    var compile = function (pipeline) {
+        return pipeline.pipe(jshint())
+            .pipe(jshint.reporter(stylish))
+            .pipe(jshint.reporter('fail'));
+    };
+}
+
+//  opts
+//  {
+//      useJsHint: whether to compile js with jshint or not
+//      sourceMapsOpts :{
+//          use: whether to use sourcemaps or not
+//          concat: whether to concat before creating source maps or not.
+//      }
+//  }
+var bundle = function (files, dest, opts) {
+
+    var pipeline = gulp.src(files);
+    var isTrue = function (val) {
+        return val === undefined || val === true;
+    };
+    var minifyAndAnnotate = function (pipeline, concatenated) {
+        var p = pipeline;
+        if (!concatenated) {
+            var p = p.pipe(concat(dest + '.js'));
+        }
+        return p.pipe(ngAnnotate())
+            .pipe(uglify());
+    };
+
+    opts = opts || {};
+    if(isTrue(opts.useJsHint) && compile)
+    {        
+        pipeline = compile(pipeline);
+    }
+
+    if (opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use)) {        
+        var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;
+        if (shouldConcat) {
+            pipeline = pipeline.pipe(concat(dest + '.js'));
+        }
+        pipeline = pipeline.pipe(sourcemaps.init({ loadMaps: true }));        
+        pipeline = minifyAndAnnotate(pipeline, shouldConcat)
+                    .pipe(rename({ suffix: '.min' }))
+                    .pipe(sourcemaps.write('./'));
+    }
+    else {
+        pipeline = minifyAndAnnotate(pipeline, false)
+                    .pipe(rename({ suffix: '.min' }));
+    }
+
+    return pipeline.pipe(gulp.dest('.'));
+    //return gulp.src([config.app])
+    //    .pipe(jshint())
+    //    .pipe(jshint.reporter(stylish))
+    //    .pipe(jshint.reporter('fail'))
+    //    .pipe(sourcemaps.init({ loadMaps: true }))
+    //        .pipe(concat(config.appDest + '.js'))    
+    //        .pipe(ngAnnotate())
+    //        .pipe(uglify())
+    //        .pipe(rename({ suffix: '.min' }))
+    //    .pipe(sourcemaps.write('./'))
+    //    .pipe(gulp.dest('.'));
 };
 
+if (config.bundleVendors) {    
+
+    // browserify
+    if (config.browserify) {
+        // browserify
+        var watchify = require('watchify'),
+            browserify = require('browserify'),
+            // convert browserify into stream that gulp understands
+            source = require('vinyl-source-stream'),
+            buffer = require('vinyl-buffer'),
+            // to import css files of libraries as well
+            browserifyCss = require('browserify-css'),
+            path = require('path'),
+            fse = require('fs-extra');
+
+        var _browserify = function (shouldWatch) {
+            var opt = {
+                //debug: true,            
+            };
+            function copyAssets(relativeUrl) {
+                // copy assets like images, fonts .. etc to /assets/vendor/..
+                var stripQueryStringAndHashFromPath = function (url) {
+                    return url.split('?')[0].split('#')[0];
+                };
+                var rootDir = process.cwd();
+                var relativePath = stripQueryStringAndHashFromPath(relativeUrl);
+                var queryStringAndHash = relativeUrl.substring(relativePath.length);
+
+                // 
+                // Copying files from '/node_modules/bootstrap/' to 'dist/vendor/bootstrap/' 
+                //                                         
+                var prefix = 'node_modules';
+                if (relativePath.startsWith(prefix)) {
+                    var vendorPath = 'assets/vendor/' + relativePath.substring(prefix.length);
+                    var source = path.join(rootDir, relativePath);
+                    var target = path.join(rootDir, vendorPath);
+
+                    //gutil.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
+                    fse.copySync(source, target);
+
+                    // Returns a new path string with original query string and hash fragments 
+                    return vendorPath + queryStringAndHash;
+                }
+                return relativeUrl;
+            }
+
+            var b = shouldWatch ? watchify(browserify(config.vendor, opt)) : browserify(config.vendor, opt);
+
+            return b.transform(browserifyCss, {
+                autoInject: true,
+                rootDir: '.',
+                processRelativeUrl: copyAssets
+            })
+                .bundle()
+                .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+                .pipe(source(config.vendors.dest + '.js'))
+                .pipe(buffer())
+                .pipe(sourcemaps.init({ loadMaps: true }))
+                    .pipe(uglify())
+                    .pipe(rename({ suffix: '.min' }))
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest('.'));
+        };
+
+        bundleVendors = function () {
+            return _browserify(false);
+        };
+
+        watchVendors = function () {
+            return _browserify(true);
+        };
+    }
+    else {
+        bundleVendors = function () {
+            return bundle(config.vendors.list, config.vendors.dest, { useJsHint: false});
+        };
+
+        watchVendors = function () {
+            return gulp.watch(config.vendors.list, ['bundle-vendors']);
+        };
+    }
+}
+
 gulp.task('clean:css', function (cb) {
-    rimraf(config.cssDest, cb);
+    rimraf(config.css.dest + '*.css*', cb);
 });
 
 gulp.task('clean:js', function (cb) {
-    rimraf(config.appDest + '*.js*', cb);
+    rimraf(config.app.dest + '*.js*', cb);
 });
 
 gulp.task('clean-vendor:js', function (cb) {
-    rimraf(config.vendorDest + '.*.js*', cb);
+    config.bundleVendors && rimraf(config.vendors.dest + '.*.js*', cb);    
 });
 
 gulp.task('clean', ['clean:js', 'clean-vendor:js', 'clean:css']);
 
-var _browserify = function (shouldWatch) {
-    var opt = {
-        //debug: true,            
-    };
-    function copyAssets(relativeUrl) {
-        // copy assets like images, fonts .. etc to /assets/vendor/..
-        var stripQueryStringAndHashFromPath = function (url) {
-            return url.split('?')[0].split('#')[0];
-        };
-        var rootDir = process.cwd();
-        var relativePath = stripQueryStringAndHashFromPath(relativeUrl);
-        var queryStringAndHash = relativeUrl.substring(relativePath.length);
-
-        // 
-        // Copying files from '/node_modules/bootstrap/' to 'dist/vendor/bootstrap/' 
-        //                                         
-        var prefix = 'node_modules';
-        if (relativePath.startsWith(prefix)) {
-            var vendorPath = 'assets/vendor/' + relativePath.substring(prefix.length);
-            var source = path.join(rootDir, relativePath);
-            var target = path.join(rootDir, vendorPath);
-
-            //gutil.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
-            fse.copySync(source, target);
-
-            // Returns a new path string with original query string and hash fragments 
-            return vendorPath + queryStringAndHash;
-        }
-        return relativeUrl;
-    }
-
-    var b = shouldWatch ? watchify(browserify(config.vendor, opt)) : browserify(config.vendor, opt);
-
-    return b.transform(browserifyCss, {
-            autoInject: true,
-            rootDir: '.',
-            processRelativeUrl: copyAssets
-        })
-    	.bundle()
-        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-        .pipe(source(config.vendorDest + '.js'))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-            .pipe(uglify())
-            .pipe(rename({ suffix: '.min' }))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('.'));
-};
-
-gulp.task('browserify-vendors', ['clean-vendor:js'], function () {
-    return _browserify(false);
-});
-
 gulp.task('scripts', ['clean:js'], function () {
-    return gulp.src([config.app])
-        .pipe(jshint())
-        .pipe(jshint.reporter(stylish))
-        .pipe(jshint.reporter('fail'))
-        .pipe(sourcemaps.init({ loadMaps: true }))
-            .pipe(concat(config.appDest + '.js'))
-            .pipe(gulp.dest('.'))
-            .pipe(ngAnnotate())
-            .pipe(uglify())
-            .pipe(rename({ suffix: '.min' }))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('.'));
+    // replace src with aray to exclude min and start with modules
+    var src = [config.app.ngModules, config.app.src, '!' + config.app.minified];
+    return bundle(src, config.app.dest);
+    //return gulp.src([config.app])
+    //    .pipe(jshint())
+    //    .pipe(jshint.reporter(stylish))
+    //    .pipe(jshint.reporter('fail'))
+    //    .pipe(sourcemaps.init({ loadMaps: true }))
+    //        .pipe(concat(config.appDest + '.js'))
+    //        .pipe(gulp.dest('.'))
+    //        .pipe(ngAnnotate())
+    //        .pipe(uglify())
+    //        .pipe(rename({ suffix: '.min' }))
+    //    .pipe(sourcemaps.write('./'))
+    //    .pipe(gulp.dest('.'));
 });
 
 gulp.task('styles', ['clean:css'], function () {
-    return gulp.src(config.cssSrc)
-        .pipe(concat(config.cssDest))
+    return gulp.src([config.css.src])
+        .pipe(concat(config.css.dest + '.min.css'))
         .pipe(cssmin())
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('bundle', ['styles', 'scripts', 'browserify-vendors']);
+gulp.task('vendors', ['clean-vendor:js'], function () {    
+    return config.bundleVendors && bundleVendors && bundleVendors();
+});
 
-gulp.task('watchify-vendors', function () {
-    return _browserify(true);
+gulp.task('bundle', ['styles', 'scripts', 'vendors']);
+
+gulp.task('watch:vendors', function () {
+    return config.bundleVendors && watchVendors && watchVendors();
 });
 
 gulp.task('watch:js', function () {
