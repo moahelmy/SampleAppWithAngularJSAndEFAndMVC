@@ -1,0 +1,11 @@
+﻿(function () {
+    'use strict';
+
+    var SettingService = function () {        
+        this.webserviceUrl = '@Html.ViewBag.apiURL';
+    }
+        
+    angular.module('courses.settings', [])
+        .service('settings', SettingService)
+
+}());
