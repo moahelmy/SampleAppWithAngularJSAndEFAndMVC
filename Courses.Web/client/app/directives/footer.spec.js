@@ -5,7 +5,7 @@
 
         beforeEach(module('courese.directives.layout'));
 
-        describe('footer.controller', function () {
+        describe('footer controller', function () {
 
             var ctrl;
 

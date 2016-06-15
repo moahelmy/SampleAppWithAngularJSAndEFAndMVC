@@ -116,30 +116,21 @@
     <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="client\dist\app.min.js" />
+    <Content Include="client\dist\styles.min.css" />
+    <Content Include="client\dist\vendors.min.js" />
     <Content Include="client\styles\main.css" />
     <Content Include="client\vendor\vendors.css" />
     <Content Include="client\vendor\vendors.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="gulp.config.js" />
+    <Content Include="gulp.helper.js" />
     <Content Include="karma.conf.js" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap-theme.css" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap-theme.min.css" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap.css" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap.min.css" />
-    <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="node_modules\bootstrap\dist\js\bootstrap.js" />
-    <Content Include="node_modules\bootstrap\dist\js\bootstrap.min.js" />
-    <Content Include="node_modules\bootstrap\dist\js\npm.js" />
     <Content Include="packages.config" />
     <Content Include="package.json" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap-theme.css.map" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap-theme.min.css.map" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap.css.map" />
-    <Content Include="node_modules\bootstrap\dist\css\bootstrap.min.css.map" />
-    <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="client\dist\app.min.js.map" />
+    <Content Include="client\dist\vendors.min.js.map" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -175,7 +166,6 @@
   <ItemGroup>
     <Folder Include="client\app\courses\" />
     <Folder Include="client\app\layout\" />
-    <Folder Include="client\dist\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

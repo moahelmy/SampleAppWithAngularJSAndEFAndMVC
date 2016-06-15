@@ -5,6 +5,7 @@
 		    'ngMessages',
 
 		    /* Cross-app modules */
+            'courses.settings',
 
 		    /* App directives */
 		    'courese.directives',
@@ -22,7 +23,7 @@
         // if config grow bigger it will be moved to separate file
         .config(['toasterConfig', function (toasterConfig) {
             toasterConfig['close-button'] = true;
-            toasterConfig['position-class'] = 'toast-top-right'; d
+            toasterConfig['position-class'] = 'toast-top-right';
             toasterConfig['newest-on-top'] = false;
             toasterConfig.limit = 50;
         }]);
