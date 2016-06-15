@@ -5,15 +5,18 @@
 };
 
 var appList = function () {
-    var config = this;
-    config.app.list && config.app.list.length > 0 && gutil.log('WTF');
+    var config = this;    
     if (config.app.list && config.app.list.length > 0)
         return config.app.list;
 
-    var src = config.app.nonAngular.concat([config.app.ngModules, config.app.src, '!' + config.app.minified]);
+    var src = config.app.nonAngular;
+    config.app.ngModules && src.push(config.app.ngModules);
+    src.push(config.app.src);
+    config.app.minified && src.push('!' + config.app.minified);
+    config.app.specs && src.push('!' + config.app.specs);    
     var exc = constructExclude(config.app.exclude);
     src = src.concat(exc);
-
+    
     return src;
 };
 
@@ -40,6 +43,7 @@ module.exports = {
         ngModules: 'client/app/**/*.module.js',
         src: 'client/app/**/*.js',
         minified: 'client/app/**/*.min.js',
+        specs: 'client/app/**/*.spec.js',
         exclude: [],
         dest: 'client/dist/app',
     },

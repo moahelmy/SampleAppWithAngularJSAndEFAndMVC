@@ -7,15 +7,15 @@
     function config($stateProvider) {
         'ngInject';
 
-        $stateProvider.state('Default', {
-            url: '',
-            views: {
-                "mainView": {                    
-                    templateUrl: app.config.courses + '/courses.list.html',
-                    controller: 'CoursesListController',
-                    controllerAs: 'vm',
-                }
-            }
-        });
+        //$stateProvider.state('Default', {
+        //    url: '',
+        //    views: {
+        //        "mainView": {                    
+        //            templateUrl: app.config.courses + '/courses.list.html',
+        //            controller: 'CoursesListController',
+        //            controllerAs: 'vm',
+        //        }
+        //    }
+        //});
     }
 })(app);
