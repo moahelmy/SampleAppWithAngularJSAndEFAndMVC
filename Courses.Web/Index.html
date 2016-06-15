@@ -1,19 +1,21 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Courses - Sample Project</title>    
-	<meta charset="utf-8" />
+    <title>Courses - Sample Project</title>
+    <meta charset="utf-8" />
     <link rel="icon" ng-href="favicon.ico">
-    <link rel="stylesheet" href="client/dist/styles.min.css"/>    
+    <link rel="stylesheet" href="client/dist/styles.min.css" />
 </head>
 <body ng-app="courses.main">
 
-    <toaster-container></toaster-container>    
+    <toaster-container></toaster-container>
+    <courses.header></courses.header>
     <div class="container main-content">
-        <div ui-view="mainView"></div>        
-    </div>    
+        <div ui-view="mainView"></div>
+    </div>
+    <courses.footer></courses.footer>
 
-    <script src="client/dist/vendors.min.js"></script>    
+    <script src="client/dist/vendors.min.js"></script>
     <script src="client/dist/app.min.js"></script>
 </body>
 </html>
