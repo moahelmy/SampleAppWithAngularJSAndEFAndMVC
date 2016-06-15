@@ -3,23 +3,25 @@
     jshint: true,
     browserify: true,
     vendors: {
-        main: 'vendor/vendors.js',
-        list: [],        
-        dest: 'dist/vendors',
+        main: 'client/vendor/vendors.js',
+        list: [],
+        dest: 'client/dist/vendors',
     },
     app: {
-        ngModules: 'app/**/*.module.js',
-        src: 'app/**/*.js',
-        minified: 'app/**/*.min.js',
+        list: [],
+        nonAngular: ['client/app/**/_*.js'],
+        ngModules: 'client/app/**/*.module.js',
+        src: 'client/app/**/*.js',
+        minified: 'client/app/**/*.min.js',
         exclude: [],
-        dest: 'dist/app',
+        dest: 'client/dist/app',
     },
     css: {
-        src: './app/**/*.js',
-        minified: './app/**/*.min.js',
+        src: 'client/styles/**/*.css',
+        minified: 'client/styles/**/*.min.js',
         exclude: [],
-        dest: './dist/styles',
-    },    
+        dest: 'client/dist/styles',
+    },
 };
 
 var gulp = require('gulp'),
@@ -62,13 +64,16 @@ var bundle = function (files, dest, opts) {
     var isTrue = function (val) {
         return val === undefined || val === true;
     };
-    var minifyAndAnnotate = function (pipeline, concatenated) {
+    var concatAndAnnotate = function (pipeline) {
+        return pipeline.pipe(concat(dest + '.js'))
+                       .pipe(ngAnnotate());
+    };
+    var minfiy = function (pipeline, concatenated) {
         var p = pipeline;
         if (!concatenated) {
-            var p = p.pipe(concat(dest + '.js'));
+            var p = concatAndAnnotate(p);
         }
-        return p.pipe(ngAnnotate())
-            .pipe(uglify());
+        return p.pipe(uglify());
     };
 
     var pipeline = gulp.src(files);
@@ -80,15 +85,15 @@ var bundle = function (files, dest, opts) {
     if (opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use)) {
         var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;
         if (shouldConcat) {
-            pipeline = pipeline.pipe(concat(dest + '.js'));
+            pipeline =  concatAndAnnotate(pipeline);
         }
         pipeline = pipeline.pipe(sourcemaps.init({ loadMaps: true }));
-        pipeline = minifyAndAnnotate(pipeline, shouldConcat)
+        pipeline = minfiy(pipeline, shouldConcat)
                     .pipe(rename({ suffix: '.min' }))
                     .pipe(sourcemaps.write('./'));
     }
     else {
-        pipeline = minifyAndAnnotate(pipeline, false)
+        pipeline = minfiy(pipeline, false)
                     .pipe(rename({ suffix: '.min' }));
     }
 
@@ -112,7 +117,7 @@ if (config.bundleVendors) {
 
         var _browserify = function (shouldWatch) {
             var opt = {
-                //debug: true,            
+                //debug: true,
             };
             function copyAssets(relativeUrl) {
                 // copy assets like images, fonts .. etc to /assets/vendor/..
@@ -123,9 +128,9 @@ if (config.bundleVendors) {
                 var relativePath = stripQueryStringAndHashFromPath(relativeUrl);
                 var queryStringAndHash = relativeUrl.substring(relativePath.length);
 
-                // 
-                // Copying files from '/node_modules/bootstrap/' to 'dist/vendor/bootstrap/' 
-                //                                         
+                //
+                // Copying files from '/node_modules/bootstrap/' to 'dist/vendor/bootstrap/'
+                //
                 var prefix = 'node_modules';
                 if (relativePath.startsWith(prefix)) {
                     var vendorPath = 'assets/vendor/' + relativePath.substring(prefix.length);
@@ -135,7 +140,7 @@ if (config.bundleVendors) {
                     //gutil.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
                     fse.copySync(source, target);
 
-                    // Returns a new path string with original query string and hash fragments 
+                    // Returns a new path string with original query string and hash fragments
                     return vendorPath + queryStringAndHash;
                 }
                 return relativeUrl;
@@ -178,6 +183,30 @@ if (config.bundleVendors) {
     }
 }
 
+var constructExclude = function (exclude) {
+    return exclude.map(function (f) {
+        return (f.startsWith('!') ? '' : '!') + f;
+    });
+};
+
+var appList = function () {
+    config.app.list && config.app.list.length > 0 && gutil.log('WTF');
+    if (config.app.list && config.app.list.length > 0)
+        return config.app.list;
+
+    var src = config.app.nonAngular.concat([config.app.ngModules, config.app.src, '!' + config.app.minified]);
+    var exc = constructExclude(config.app.exclude);
+    src = src.concat(exc);
+
+    return src;
+};
+
+var cssList = function () {
+    var src = [config.css.src, '!' + config.css.minified];
+    var exc = constructExclude(config.css.exclude);
+    return src.concat(exc);
+};
+
 gulp.task('clean:css', function (cb) {
     rimraf(config.css.dest + '*.css*', cb);
 });
@@ -193,22 +222,11 @@ gulp.task('clean-vendor:js', function (cb) {
 gulp.task('clean', ['clean:js', 'clean-vendor:js', 'clean:css']);
 
 gulp.task('scripts', ['clean:js'], function () {
-    var src = [config.app.ngModules, config.app.src, '!' + config.app.minified];
-    var exc = config.app.exclude.map(function (f) {
-        return (f.startsWith('!') ? '' : '!') + f;
-    });
-    src = src.concat(exc);
-    return bundle(src, config.app.dest);
+    return bundle(appList(), config.app.dest);
 });
 
 gulp.task('styles', ['clean:css'], function () {
-    var src = [config.css.src, '!' + config.css.minified];
-    var exc = config.css.exclude.map(function (f) {
-        return (f.startsWith('!') ? '' : '!') + f;
-    });
-    src = src.concat(exc);
-
-    return gulp.src(src)
+    return gulp.src(cssList())
         .pipe(concat(config.css.dest + '.min.css'))
         .pipe(cssmin())
         .pipe(gulp.dest('.'));
@@ -218,20 +236,24 @@ gulp.task('vendors', ['clean-vendor:js'], function () {
     return config.bundleVendors && bundleVendors && bundleVendors();
 });
 
-gulp.task('bundle', ['styles', 'scripts', 'vendors']);
+gulp.task('build', ['styles', 'scripts']);
+
+gulp.task('build:all', ['build', 'vendors']);
 
 gulp.task('watch:vendors', function () {
     return config.bundleVendors && watchVendors && watchVendors();
 });
 
 gulp.task('watch:js', function () {
-    return gulp.watch(config.src, ['scripts']);
+    return gulp.watch(config.app.src, ['scripts']);
 });
 
 gulp.task('watch:css', function () {
-    return gulp.watch(config.cssSrc, ['styles']);
+    return gulp.watch(config.css.src, ['styles']);
 });
 
-gulp.task('watch', ['watch:js', 'watch:css', 'watchify-vendors']);
+gulp.task('watch', ['watch:js', 'watch:css']);
+
+gulp.task('watch:all', ['watch', 'watch:vendors']);
 
 gulp.task('default', ['watch']);

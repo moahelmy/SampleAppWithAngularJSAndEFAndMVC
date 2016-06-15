@@ -1,23 +1,23 @@
 ﻿(function () {
     'use strict';
     angular.module('courses.common', [
-		/* Angular modules */		
-		'ngMessages',        
+		    /* Angular modules */		
+		    'ngMessages',        
 
-		/* Cross-app modules */
+		    /* Cross-app modules */            
 
-		/* App directives */
-		
+		    /* App directives */		    
 
-		/* 3rd Party modules */
-		'ui.bootstrap',
-		'ui.router',
-		'ui.select',
-        'ui.grid',
-		'ui.grid.selection',
-		'ui.grid.pagination',
-		'ui.grid.autoResize',
-		'toaster'])
+		    /* 3rd Party modules */
+		    'ui.bootstrap',
+		    'ui.router',
+		    'ui.select',
+            'ui.grid',
+		    'ui.grid.selection',
+		    'ui.grid.pagination',
+		    'ui.grid.autoResize',
+		    'toaster']
+        )        
         // if config grow bigger it will be moved to separate file
         .config(['toasterConfig', function (toasterConfig) {
 		    toasterConfig['close-button'] = true;

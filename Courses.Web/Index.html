@@ -3,12 +3,17 @@
 <head>
     <title>Courses - Sample Project</title>    
 	<meta charset="utf-8" />
-    <link rel="stylesheet" href="/dist/styles.min.css"/>
+    <link rel="icon" ng-href="favicon.ico">
+    <link rel="stylesheet" href="client/dist/styles.min.css"/>    
 </head>
 <body ng-app="courses.main">
 
+    <toaster-container></toaster-container>    
+    <div class="container main-content">
+        <div ui-view="mainView"></div>        
+    </div>    
 
-    <script src="/dist/vendors.min.js"></script>
-    <script src="/dist/app.min.js"></script>
+    <script src="client/dist/vendors.min.js"></script>    
+    <script src="client/dist/app.min.js"></script>
 </body>
 </html>

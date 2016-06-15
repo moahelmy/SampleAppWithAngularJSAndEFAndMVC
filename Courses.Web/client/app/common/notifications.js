@@ -1,8 +1,8 @@
 ﻿(function () {
     'use strict';
 
-    var NotificationService = (function () {
-        function NotificationService(toaster) {
+    var Notifications = (function () {
+        function Notifications(toaster) {
             var self = this, _id = 1;
 
             self.showError = showError;
@@ -59,10 +59,10 @@
             }
         }
 
-        NotificationService.$inject = ['toaster'];
-        return NotificationService;
+        Notifications.$inject = ['toaster'];
+        return Notifications;
     })();
 
-    angular.module('courses.common.services')
-            .service('notifications', NotificationService);
+    angular.module('courses.common')
+            .service('notifications', Notifications);
 })();

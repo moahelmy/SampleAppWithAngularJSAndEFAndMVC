@@ -95,15 +95,24 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\app.module.js" />
-    <Content Include="app\common\common.module.js" />
-    <Content Include="app\services\notifications.js" />
-    <Content Include="app\services\service.module.js" />
-    <Content Include="assets\vendor\angular-ui-grid\ui-grid.svg" />
-    <Content Include="assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="dist\app.min.js" />
-    <Content Include="dist\styles.min.css" />
-    <Content Include="dist\vendors.min.js" />
+    <Content Include="client\app\app.module.js" />
+    <Content Include="client\app\common\common.module.js" />
+    <Content Include="client\app\common\notifications.js" />
+    <Content Include="client\app\common\_config.js" />
+    <Content Include="client\app\directives\directives.modules.js" />
+    <Content Include="client\app\services\service.module.js" />
+    <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.eot" />
+    <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.svg" />
+    <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.ttf" />
+    <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.woff" />
+    <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="client\assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="client\styles\main.css" />
+    <Content Include="client\vendor\vendors.css" />
+    <Content Include="client\vendor\vendors.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="node_modules\bootstrap\dist\css\bootstrap-theme.css" />
@@ -124,23 +133,11 @@
     <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="node_modules\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="dist\app.min.js.map" />
-    <Content Include="dist\vendors.min.js.map" />
-    <Content Include="assets\vendor\angular-ui-grid\ui-grid.eot" />
-    <Content Include="assets\vendor\angular-ui-grid\ui-grid.ttf" />
-    <Content Include="assets\vendor\angular-ui-grid\ui-grid.woff" />
-    <Content Include="assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="assets\vendor\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Scripts\_references.js" />
-    <Content Include="styles\main.css" />
-    <Content Include="vendor\vendors.css" />
-    <Content Include="vendor\vendors.js" />
     <Content Include="Views\Settings\Index.cshtml" />
     <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">
@@ -169,9 +166,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="app\courses\" />
-    <Folder Include="app\directives\" />
-    <Folder Include="app\layout\" />
+    <Folder Include="client\app\courses\" />
+    <Folder Include="client\app\layout\" />
+    <Folder Include="client\dist\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
