@@ -63,6 +63,6 @@
         return Notifications;
     })();
 
-    angular.module('courses.common')
+    angular.module('courses.notifications', ['toaster'])
             .service('notifications', Notifications);
 })();

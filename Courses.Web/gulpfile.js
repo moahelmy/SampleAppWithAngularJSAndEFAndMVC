@@ -7,7 +7,8 @@
     // obvious
     concat = require('gulp-concat'),
     cssmin = require('gulp-cssmin'),
-    taskListing = require('gulp-task-listing');
+    taskListing = require('gulp-task-listing'),
+    $ = require('gulp-load-plugins')({ lazy: true });
 
 // styles
 
@@ -37,7 +38,7 @@ gulp.task('clean:js', function (cb) {
 
 gulp.task('scripts', ['clean:js'], function () {
     log('Bundling js into ' + config.app.dest + ' ...');
-    return helper.bundle(config.appList(), config.app.dest);
+    return helper.bundle(config.appList(), config.app.dest, config.compile);
 });
 
 gulp.task('watch:js', function () {
@@ -58,12 +59,12 @@ if (config.bundleVendors) {
         }
         else {
             log('Bundling 3rd party libs into ' + config.app.dest + ' ...');
-            return bundle(config.vendors.list, config.vendors.dest, { useJsHint: false });
+            return helper.bundle(config.vendors.list, config.vendors.dest, { compile: false });
         }
     });
 
     gulp.task('watch:vendors', function () {
-        if (config.browserify) {            
+        if (config.browserify) {
             return helper.browserify(config.vendors.main, config.vendors.dest, true);
         }
         else {

@@ -29,7 +29,7 @@ var cssList = function () {
 
 module.exports = {
     bundleVendors: true,
-    jshint: true,
+    compile: true,
     browserify: true,
     log: true,
     vendors: {

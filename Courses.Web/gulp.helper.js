@@ -1,13 +1,6 @@
 ﻿var gulp = require('gulp'),
-    gutil = require('gulp-util'),    
     // obvious
-    concat = require('gulp-concat'),   
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
-    // create source maps
-    sourcemaps = require('gulp-sourcemaps'),
-    // add dependency injects for angular - write "ngInject"; at top of functions to use this
-    ngAnnotate = require('gulp-ng-annotate');
+    $ = require('gulp-load-plugins')({ lazy: false });
 
 // =====================//
 var isTrue = function (val) {
@@ -16,7 +9,7 @@ var isTrue = function (val) {
 
 //  opts
 //  {
-//      useJsHint: whether to _compile js with jshint or not
+//      compile: whether to compile js with jshint or not
 //      sourceMapsOpts :{
 //          use: whether to use sourcemaps or not
 //          concat: whether to concat before creating source maps or not.
@@ -24,50 +17,29 @@ var isTrue = function (val) {
 //  }
 var bundle = function(files, dest, opts) {
 
-    var concatAndAnnotate = function (pipeline) {
-        return pipeline.pipe(concat(dest + '.js'))
-                        .pipe(ngAnnotate());
-    };
-    var minfiy = function (pipeline, concatenated) {
-        var p = pipeline;
-        if (!concatenated) {
-            var p = concatAndAnnotate(p);
-        }
-        return p.pipe(uglify());
-    };
-
-    var pipeline = gulp.src(files);
     opts = opts || {};
-    if (isTrue(opts.useJsHint) && _compile) {
-        pipeline = _compile(pipeline);
-    }
-
-    if (opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use)) {
-        var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;
-        if (shouldConcat) {
-            pipeline = concatAndAnnotate(pipeline);
-        }
-        pipeline = pipeline.pipe(sourcemaps.init({ loadMaps: true }));
-        pipeline = minfiy(pipeline, shouldConcat)
-                    .pipe(rename({ suffix: '.min' }))
-                    .pipe(sourcemaps.write('./'));
-    }
-    else {
-        pipeline = minfiy(pipeline, false)
-                    .pipe(rename({ suffix: '.min' }));
-    }
-
-    return pipeline.pipe(gulp.dest('.'));
-};    
+    var shouldCompile = isTrue(opts.compile);
+    var smaps = opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use);
+    var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;
+    return gulp.src(files)            
+            .pipe($.if(shouldCompile, $.eslint()))
+            .pipe($.if(shouldCompile, $.eslint.format()))
+            .pipe($.if(shouldCompile, $.eslint.failAfterError()))
+            .pipe($.if(smaps && shouldConcat, $.concat(dest + '.js')))
+            .pipe($.if(smaps && shouldConcat, $.ngAnnotate()))
+            .pipe($.if(smaps, $.sourcemaps.init({ loadMaps: true })))
+            .pipe($.if(!(smaps && shouldConcat), $.concat(dest + '.js')))
+            .pipe($.if(!(smaps && shouldConcat), $.ngAnnotate()))
+            .pipe($.uglify())
+            .pipe($.if(smaps, $.rename({ suffix: '.min' })))
+            .pipe($.if(smaps, $.sourcemaps.write('./')))
+            .pipe(gulp.dest('.'));
+};
 
 var browserify = function (mainFile, dest, shouldWatch) {
-    var watchify = require('watchify'),
-        browserify = require('browserify'),
-        // convert browserify into stream that gulp understands
+    var // convert browserify into stream that gulp understands
         source = require('vinyl-source-stream'),
         buffer = require('vinyl-buffer'),
-        // to import css files of libraries as well
-        browserifyCss = require('browserify-css'),
         path = require('path'),
         fse = require('fs-extra');
 
@@ -92,7 +64,7 @@ var browserify = function (mainFile, dest, shouldWatch) {
             var source = path.join(rootDir, relativePath);
             var target = path.join(rootDir, vendorPath);
 
-            //gutil.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
+            //$.util.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
             fse.copySync(source, target);
 
             // Returns a new path string with original query string and hash fragments
@@ -101,34 +73,34 @@ var browserify = function (mainFile, dest, shouldWatch) {
         return relativeUrl;
     }
 
-    var b = shouldWatch ? watchify(browserify(mainFile, opt)) : browserify(mainFile, opt);
-
-    return b.transform(browserifyCss, {
-        autoInject: true,
-        rootDir: '.',
-        processRelativeUrl: copyAssets
-    })
+    return $.if(shouldWatch, $.watchify($.browserify(mainFile, opt)), $.browserify(mainFile, opt))
+        .transform($.browserifyCss, {
+            autoInject: true,
+            rootDir: '.',
+            processRelativeUrl: copyAssets
+        })
         .bundle()
-        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+        .on('error', $.util.log.bind($.util, 'Browserify Error'))
         .pipe(source(dest + '.js'))
         .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-            .pipe(uglify())
-            .pipe(rename({ suffix: '.min' }))
-        .pipe(sourcemaps.write('./'))
+        .pipe($.sourcemaps.init({ loadMaps: true }))
+            .pipe($.uglify())
+            .pipe($.rename({ suffix: '.min' }))
+        .pipe($.sourcemaps.write('./'))
         .pipe(gulp.dest('.'));
 };
 
-function _compile(pipeline) {
-    var jshint = require('gulp-jshint'),
-        stylish = require('jshint-stylish');
+function compile(files) {
 
-    return pipeline.pipe(jshint())
-        .pipe(jshint.reporter(stylish))
-        .pipe(jshint.reporter('fail'));
+    return gulp.src(files)
+        pipeline.pipe($.jshint())
+        .pipe($.jshint.reporter('jshint-stylish', { verbose: true }))
+        .pipe($.jshint.reporter('fail'))
+        .pipe($.jscs());
 };
 
 module.exports = {
     bundle: bundle,
-    browserify: browserify
+    browserify: browserify,
+    compile: compile
 };
