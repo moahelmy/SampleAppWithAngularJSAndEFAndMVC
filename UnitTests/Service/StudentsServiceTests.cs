@@ -209,7 +209,7 @@ namespace UnitTests.Service
         public void Delete_StudentNotFound_Fail()
         {
             // Arrange
-            var id = StudentsRepository.NotFoundEntity();
+            var id = StudentsRepository.CanNotDelete();
 
             // Act
             var result = _service.Delete(id);
@@ -426,7 +426,7 @@ namespace UnitTests.Service
             Assert.That(result.Succeed, Is.False);
         }
 
-        private IResult<Student> Update_StudentFound(StudentDetails studentDetails)
+        private IResult<StudentDetails> Update_StudentFound(StudentDetails studentDetails)
         {
             // Arrange
             var student = StudentsRepository.FoundEntity();

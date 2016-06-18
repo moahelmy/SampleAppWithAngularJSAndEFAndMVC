@@ -12,26 +12,16 @@ namespace Courses.Services
         {
         }
 
-        public IResult<Teacher> Add(string fullName)
+        public IResult<IdNamePair> Add(string fullName)
         {
-            var teacher = new Teacher { FullName = fullName };
-            var result = _repository.Add(teacher);
-            _repository.UnitOfWork.SaveChanges();
-            return new Result<Teacher> { Return = teacher, Messages = result.Messages };
+            return Create(new IdNamePair { Name = fullName });
         }
 
-        public IResult<Teacher> Update(Guid id, string fullName)
+        public IResult<IdNamePair> Update(Guid id, string fullName)
         {
             if (id == Guid.Empty)
-                return new Result<Teacher>().AddErrorMessage("Id is empty");
-
-            var result = _repository.Get(id);
-            if (!result.Succeed)
-                return result;
-            result.Return.FullName = fullName;
-            _repository.UnitOfWork.SaveChanges();
-
-            return result;
+                return new Result<IdNamePair>().AddErrorMessage("Id is empty");
+            return Update(new IdNamePair {  Id = id, Name = fullName});
         }
 
         protected override IdNamePair UpdateDtoFromEntity(IdNamePair dto, Teacher entity)

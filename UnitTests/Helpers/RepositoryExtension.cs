@@ -40,5 +40,13 @@ namespace UnitTests.Helpers
 
             return entity;
         }
+
+        internal static Guid CanNotDelete<TEntity>(this IListRepository<TEntity, Guid> repo) where TEntity : BaseEntity
+        {
+            var id = Guid.NewGuid();                        
+            repo.Delete(id).Returns(new Result<TEntity>().AddErrorMessage("Not found"));
+
+            return id;
+        }
     }
 }

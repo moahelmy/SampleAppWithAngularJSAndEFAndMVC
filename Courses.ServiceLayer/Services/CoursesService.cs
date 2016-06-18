@@ -21,14 +21,7 @@ namespace Courses.Services
 
         public IReadOnlyCollection<CourseDetails> ListAll()
         {
-            return _coursesRepository.List().Select(x => new CourseDetails
-            {
-                Id = x.Id,
-                Name = x.Name,
-                BuildingNumber = x.Location.BuildingNumber,
-                RoomNumber = x.Location.RoomNumber,
-                Teacher = new IdNamePair { Id = x.Teacher.Id, Name = x.Teacher.FullName },
-            }).ToList();
+            return _coursesRepository.List().Select(x => new CourseDetails(x)).ToList();
         }
 
         public CourseDetails Get(Guid id)
@@ -37,35 +30,24 @@ namespace Courses.Services
             if (!result.Succeed)
                 return null;
             var course = result.Return;
-            return new CourseDetails
-            {
-                Id = course.Id,
-                Name = course.Name,
-                BuildingNumber = course.Location.BuildingNumber,
-                RoomNumber = course.Location.RoomNumber,
-                Teacher = new IdNamePair { Id = course.Teacher.Id, Name = course.Teacher.FullName },
-            };
+            return new CourseDetails(course);
         }
 
-        public IResult<Course> Create(CourseDetails courseDetails)
+        public IResult<CourseDetails> Create(CourseDetails courseDetails)
         {
-            var ret = new Result<Course>();
+            var ret = new Result<CourseDetails>();
             var teacherRes = _UpdateTeacher(courseDetails);
             if (teacherRes.Succeed)
             {
-                var course = new Course
-                {
-                    Name = courseDetails.Name,
-                    Location = new Location { BuildingNumber = courseDetails.BuildingNumber, RoomNumber = courseDetails.RoomNumber  },
-                    Teacher = teacherRes.Return,
-                };
+                var course = courseDetails.ToCourse();
+                course.Teacher = teacherRes.Return;                
                 var addRes = _coursesRepository.Add(course);
                 if (!addRes.Succeed)
                     ret.Messages = addRes.Messages;
                 else
                     _coursesRepository.UnitOfWork.SaveChanges();
-                ret.Return = course;
-
+                courseDetails.Id = course.Id;
+                ret.Return = courseDetails;
             }
             else
             {
@@ -75,27 +57,31 @@ namespace Courses.Services
             return ret;
         }
 
-        public IResult<Course> Delete(Guid id)
+        public IResult<CourseDetails> Delete(Guid id)
         {
             if (id == Guid.Empty)
-                return new Result<Course>().AddErrorMessage("Course id is empty");
+                return new Result<CourseDetails>().AddErrorMessage("Course id is empty");
             var result = _coursesRepository.Delete(id);
             if (result.Succeed)
                 _coursesRepository.UnitOfWork.SaveChanges();
-            return result;
+            return new Result<CourseDetails>
+            {
+                Return = new CourseDetails(result.Return),
+                Messages = result.Messages,
+            };
         }        
 
-        public IResult<Course> Update(CourseDetails courseDetails)
+        public IResult<CourseDetails> Update(CourseDetails courseDetails)
         {
             if (courseDetails.Id == Guid.Empty)
-                return new Result<Course>().AddErrorMessage("Course id is empty");
+                return new Result<CourseDetails>().AddErrorMessage("Course id is empty");
             var courseRes = _coursesRepository.Get(courseDetails.Id);
             if(!courseRes.Succeed)
-                return new Result<Course>().AddErrorMessage("Course not found");
+                return new Result<CourseDetails>().AddErrorMessage("Course not found");
 
             var teacherRes = _UpdateTeacher(courseDetails);
             if (!teacherRes.Succeed)
-                return new Result<Course> { Messages = teacherRes.Messages };
+                return new Result<CourseDetails> { Messages = teacherRes.Messages };
 
             var course = courseRes.Return;
             course.Name = courseDetails.Name;
@@ -106,7 +92,7 @@ namespace Courses.Services
 
             _coursesRepository.UnitOfWork.SaveChanges();
 
-            return new Result<Course> { Return = course };
+            return new Result<CourseDetails> { Return = courseDetails };
         }
 
         private IResult<Teacher> _UpdateTeacher(CourseDetails course)

@@ -53,7 +53,7 @@ namespace UnitTests.Service
         public void Delete_CourseNotFound_Fail()
         {
             // Arrange
-            var id = CoursesRepository.NotFoundEntity();
+            var id = CoursesRepository.CanNotDelete();
 
             // Act
             var result = Service.Delete(id);
@@ -116,12 +116,15 @@ namespace UnitTests.Service
             Teacher = new IdNamePair { Id = Guid.Empty, Name = "John Smith" },
         };
 
+        private Course _course;
+
         public override void SetUp()
         {
             base.SetUp();
 
-            TeachersRepository.Add(Arg.Any<Teacher>()).Returns(new VoidResult());
-            CoursesRepository.Add(Arg.Any<Course>()).Returns(new VoidResult());
+            TeachersRepository.Add(Arg.Any<Teacher>()).Returns(new VoidResult());            
+            CoursesRepository.Add(Arg.Any<Course>()).Returns(new VoidResult())
+                .AndDoes(ci => _course = ci.ArgAt<Course>(0));
         }
 
         #region Teacher            
@@ -150,17 +153,16 @@ namespace UnitTests.Service
             Assert.That(teacher.FullName, Is.EqualTo(newName));            
         }
         
-        protected void _TeacherIdIsEmpty_CreateTeacher(Func<IdNamePair, Course> act)
+        protected void _TeacherIdIsEmpty_CreateTeacher(Func<IdNamePair, CourseDetails> act)
         {
             // Arrange            
             var name = "Test teacher";
 
             // Act
-            var course = act(new IdNamePair { Id = Guid.Empty, Name = name});
+            act(new IdNamePair { Id = Guid.Empty, Name = name});
 
             // Assert
-            Assert.That(course.Teacher, Is.Not.Null);
-            Assert.That(course.Teacher.FullName, Is.EqualTo(name));
+            TeachersRepository.Received().Add(Arg.Any<Teacher>());
         }
         #endregion
     }
@@ -343,9 +345,9 @@ namespace UnitTests.Service
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Return, Is.Not.Null);
-            Assert.That(result.Return.Name, Is.EqualTo(CourseDetails.Name));
-            Assert.That(result.Return.Location.BuildingNumber, Is.EqualTo(CourseDetails.BuildingNumber));
-            Assert.That(result.Return.Location.RoomNumber, Is.EqualTo(CourseDetails.RoomNumber));
+            Assert.That(_course.Name, Is.EqualTo(CourseDetails.Name));
+            Assert.That(_course.Location.BuildingNumber, Is.EqualTo(CourseDetails.BuildingNumber));
+            Assert.That(_course.Location.RoomNumber, Is.EqualTo(CourseDetails.RoomNumber));
         }
 
         [Test]

@@ -33,38 +33,41 @@ namespace Courses.Services
             return ToDto(result.Return);
         }
 
-        public virtual IResult<TEntity> Create(T value)
+        public virtual IResult<T> Create(T value)
         {
             var entity = ToEntity(value);
             var addRes = _repository.Add(entity);
             _repository.UnitOfWork.SaveChanges();
-
-            return new Result<TEntity> { Return = entity, Messages = addRes.Messages };
+            value.Id = entity.Id;
+            return new Result<T> { Return = value, Messages = addRes.Messages };
         }
 
-        public virtual IResult<TEntity> Update(T value)
+        public virtual IResult<T> Update(T value)
         {
             if (value.Id == Guid.Empty)
-                return new Result<TEntity>().AddErrorMessage(ErrorMessages.IdIsEmpty);
+                return new Result<T>().AddErrorMessage(ErrorMessages.IdIsEmpty);
             var result = _repository.Get(value.Id);
             if (!result.Succeed)
-                return new Result<TEntity>().AddErrorMessage(ErrorMessages.RecordNotFound);
+                return new Result<T>().AddErrorMessage(ErrorMessages.RecordNotFound);
 
             var entity = result.Return;
             UpdateEntityFromDto(entity, value);
             _repository.UnitOfWork.SaveChanges();
 
-            return new Result<TEntity>() { Return = entity };
+            return new Result<T>() { Return = value };
         }
 
-        public virtual IResult<TEntity> Delete(Guid id)
+        public virtual IResult<T> Delete(Guid id)
         {
             if (id == Guid.Empty)
-                return new Result<TEntity>().AddErrorMessage(ErrorMessages.IdIsEmpty);
+                return new Result<T>().AddErrorMessage(ErrorMessages.IdIsEmpty);
             var result = _repository.Delete(id);
             if (result.Succeed)
                 _repository.UnitOfWork.SaveChanges();
-            return result;
+            return new Result<T>{
+                Return = ToDto(result.Return),
+                Messages = result.Messages
+            };
         }     
 
         #region Abstract and virtual methods       

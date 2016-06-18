@@ -1,5 +1,4 @@
 ﻿using Courses.DataTransferObjects;
-using Courses.Domain.Entities;
 using Swart.DomainDrivenDesign;
 using System;
 using System.Collections.Generic;
@@ -10,8 +9,8 @@ namespace Courses.Services
     {
         IReadOnlyCollection<CourseDetails> ListAll();
         CourseDetails Get(Guid id);
-        IResult<Course> Create(CourseDetails course);
-        IResult<Course> Update(CourseDetails courseDetails);
-        IResult<Course> Delete(Guid id);
+        IResult<CourseDetails> Create(CourseDetails course);
+        IResult<CourseDetails> Update(CourseDetails courseDetails);
+        IResult<CourseDetails> Delete(Guid id);
     }
 }
