@@ -10,6 +10,7 @@
         /*  opts
         *  {
         *      url: url, can override in save/delete options
+        *      listName: name used in notifications, can override in save/delete options
         *      name: name used in notifications, can override in save/delete options
         *      id: name of id property, id can be provided explicitily in save/delete options
         *      getId: function to get id from data, id can be provided explicitily in save/delete options
@@ -98,7 +99,7 @@
                 var url = options.url || opts.url;
                 var list = [];
                 
-                _apiCall(httpClient.get(url), options, 'load').then(function (data) {
+                _apiCall(httpClient.get(url), options, 'load', true).then(function (data) {
                     if (!angular.isArray(data)) {
                         throw new Error('Expected an array from the backend');
                     }
@@ -123,14 +124,15 @@
                 return value;
             }
 
-            function _apiCall(promise, options, method) {
+            function _apiCall(promise, options, method, isList) {
                 var promiseFn = function(){
                     return promise;
                 };
                 if (options.notifications)
                     return apiHelper.call({ notifications: options.notifications, action: promiseFn });
                 return apiHelper[method]({
-                    description: options.description || opts.description
+                    description: options.description || (isList === true ? opts.listName : opts.name),
+                    action: promiseFn
                 });
             }
 

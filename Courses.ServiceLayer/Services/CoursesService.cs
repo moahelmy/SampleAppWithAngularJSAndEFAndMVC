@@ -21,7 +21,7 @@ namespace Courses.Services
 
         public IReadOnlyCollection<CourseDetails> ListAll()
         {
-            return _coursesRepository.List().Select(x => new CourseDetails(x)).ToList();
+            return _coursesRepository.List().ToList().Select(x => new CourseDetails(x)).ToList();
         }
 
         public CourseDetails Get(Guid id)

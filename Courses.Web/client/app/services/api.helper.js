@@ -88,15 +88,7 @@
                     } else {
                         if (errorNotification) notifications.showError(errorNotification.title, errorNotification.message);
                     }
-                    deferred.reject(response);
-                    //if (typeof error === "string") {
-                    //    errorNotification && notifications.showError(errorNotification.title, errorNotification.message);
-                    //    deferred.reject({ Messages: { Error: error } });
-                    //}
-                    //else {
-                    //    errorNotification && _showError({ ErrorMessages: error });
-                    //    deferred.reject({ ErrorMessages: error });
-                    //}
+                    deferred.reject(response);                    
                 });
             }
             catch (ex) {

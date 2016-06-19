@@ -3,9 +3,7 @@
 
     describe('custom resource', function () {
         var httpClient, apiHelper, resource, $rootScope, $q;
-        var baseUrl = './', relativeUrl = 'api/tests', fullUrl = './api/tests';
-
-        beforeEach(module('courses.services'));
+        var baseUrl = './', relativeUrl = 'api/tests', fullUrl = './api/tests';        
 
         angular.module('courses.settings', []);
         beforeEach(module(function ($provide) {
@@ -30,6 +28,8 @@
                 ]);
             });
         }));
+
+        beforeEach(module('courses.services'));
 
         beforeEach(inject(function (_httpClient_, _apiHelper_, _resource_, _$rootScope_, _$q_) {
             resource = _resource_;
@@ -85,7 +85,7 @@
 
         describe('query', function () {
             var list = [{ name: 'test' }];
-            var resourceOptions = { url: relativeUrl, description: 'Users' };
+            var resourceOptions = { url: relativeUrl, listName: 'Users' };
             var prepare = function (options, backEndReturn) {
                 var testResource = resource(resourceOptions);
                 var promise = $q.when(backEndReturn || list);
@@ -174,14 +174,14 @@
 
                 $rootScope.$apply();
                 expect(apiHelper.load).toHaveBeenCalledWith(jasmine.objectContaining({
-                    description: resourceOptions.description
+                    description: resourceOptions.listName
                 }));
             });
         });
 
         describe('get', function () {
             var result = { name: 'test' };
-            var resourceOptions = { url: relativeUrl, description: 'Users' };
+            var resourceOptions = { url: relativeUrl, name: 'Users' };
             var prepare = function (options, backEndReturn) {
                 var testResource = resource(resourceOptions);
                 var promise = $q.when(backEndReturn || result);
@@ -270,7 +270,7 @@
 
                 $rootScope.$apply();
                 expect(apiHelper.load).toHaveBeenCalledWith(jasmine.objectContaining({
-                    description: resourceOptions.description
+                    description: resourceOptions.name
                 }));
             });
         });
@@ -278,7 +278,7 @@
         describe('save', function () {
             var result = { id: 1, name: 'test' };
             var resultWithoutId = { name: 'test' };
-            var resourceOptions = { url: relativeUrl, description: 'Users' };
+            var resourceOptions = { url: relativeUrl, name: 'User' };
             var prepare = function (isNew, options, backEndReturn) {
                 var testResource = resource(resourceOptions);
                 var promise = $q.when(backEndReturn || result);
@@ -374,14 +374,14 @@
 
                 $rootScope.$apply();
                 expect(apiHelper.create).toHaveBeenCalledWith(jasmine.objectContaining({
-                    description: resourceOptions.description
+                    description: resourceOptions.name
                 }));
             });
         });
 
         describe('delete', function () {
             var result = { name: 'test' };
-            var resourceOptions = { url: relativeUrl, description: 'Users' };
+            var resourceOptions = { url: relativeUrl, name: 'User' };
             var prepare = function (options, backEndReturn) {
                 var testResource = resource(resourceOptions);
                 var promise = $q.when(backEndReturn || result);
@@ -470,7 +470,7 @@
 
                 $rootScope.$apply();
                 expect(apiHelper.delete).toHaveBeenCalledWith(jasmine.objectContaining({
-                    description: resourceOptions.description
+                    description: resourceOptions.name
                 }));
             });
         });        

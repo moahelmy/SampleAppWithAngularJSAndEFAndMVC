@@ -1,0 +1,18 @@
+﻿[
+  {
+    "name": 'Biology',
+    "location": 'Building
+    "1" -
+    "Room" 102',
+    "teacher": 'Adam
+    "Smith'",
+    "students": [
+      {
+        "name": 'Mohammad
+        "Helmy'",
+        "age": '33',
+        "gpa": '3.8',
+      }
+    ],
+  }
+]

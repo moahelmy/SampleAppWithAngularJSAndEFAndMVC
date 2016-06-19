@@ -1,0 +1,33 @@
+﻿﻿<div class="panel panel-body">
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-success" ng-click="$ctrl.add()">
+                <i class="glyphicon glyphicon-edit"></i> Add
+            </button>
+        </div>
+    </div>
+    <div class="row top-margin-15">
+        <div class="col-md-12">
+            <div ui-grid="$ctrl.coursesGrid" ui-grid-selection ui-grid-pagination class="full-width"></div>
+        </div>
+    </div>
+
+    <div class="row top-margin-15">
+        <div class="col-md-12">
+            <h3>{{ $ctrl.course.name }}</h3>
+        </div>
+    </div>
+
+    <course-students course-id="$ctrl.course.id"></course-students>
+</div>
+
+<script type="text/ng-template" id="edit-course-template">
+    <button class="btn btn-success center-block" ng-click="grid.appScope.edit(row.entity)">
+        <i class="glyphicon glyphicon-edit"></i>
+    </button>
+</script>
+<script type="text/ng-template" id="delete-course-template">
+    <button class="btn btn-danger center-block" ng-click="grid.appScope.remove(row.entity)">
+        <i class="glyphicon glyphicon-remove"></i>
+    </button>
+</script>

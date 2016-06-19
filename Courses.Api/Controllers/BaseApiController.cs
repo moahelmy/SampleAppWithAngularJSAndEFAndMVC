@@ -2,9 +2,11 @@
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Courses.Api.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class BaseApiController : ApiController
     {
         protected void HandleResult(IVoidResult result)

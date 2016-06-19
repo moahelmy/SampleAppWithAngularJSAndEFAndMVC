@@ -29,17 +29,20 @@
         // this is useful when we need to add constant headers to all requests
         // also, it's good because I can tailor the success and fail behavior        
         function _http(url, method, params, data) {
-            return $http({
+            var deferred = $q.defer();            
+            $http({
                 method: method,
                 url: getUrl(url),
                 params: params,
-                headers: { 'Content-Type': 'application/json ; ' },
+                headers: { 'Content-Type': 'application/json;' },                
                 data: data
             }).then(function (response) {
-                return response && response.data || response;
+                return deferred.resolve(response && response.data || response);
             }).catch(function (response) {
-                $q.reject(response);
+                deferred.reject(response);
             });
+
+            return deferred.promise;
         }
 
         function getUrl(url) {

@@ -18,10 +18,17 @@ module.exports = function (config) {
           'node_modules/angular/angular.js',
           'node_modules/angular-animate/angular-animate.js',
           'node_modules/angular-resource/angular-resource.js',
+          'node_modules/angular-messages/angular-messages.js',
+          'node_modules/angular-ui-router/release/angular-ui-router.js',
+          'node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js',
+          'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
+          'node_modules/ui-select/dist/select.js',
+          'node_modules/angular-ui-grid/ui-grid.js',
+          'node_modules/angularjs-toaster/toaster.js',
           'node_modules/angular-mocks/angular-mocks.js',
           'client/app/**/_*.js',
           'client/app/**/*.module.js',
-          'client/app/**/!(_)*!(.module|.spec).js',          
+          'client/app/**/!(_)*!(module|spec).js',          
           'client/app/**/*.spec.js'
         ],
 

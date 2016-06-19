@@ -1,5 +1,5 @@
-﻿var gulp = require('gulp'),
-    // obvious
+﻿var gulp = require('gulp'),    
+    gutil = require('gulp-util'),
     $ = require('gulp-load-plugins')({ lazy: false });
 
 // =====================//
@@ -26,6 +26,7 @@ var bundle = function(files, dest, opts) {
             .pipe($.if(shouldCompile, $.eslint.format()))
             .pipe($.if(shouldCompile, $.eslint.failAfterError()))
             .pipe($.if(smaps && shouldConcat, $.concat(dest + '.js')))
+            .pipe($.if(smaps && shouldConcat, gulp.dest('.')))
             .pipe($.if(smaps && shouldConcat, $.ngAnnotate()))
             .pipe($.if(smaps, $.sourcemaps.init({ loadMaps: true })))
             .pipe($.if(!(smaps && shouldConcat), $.concat(dest + '.js')))
@@ -37,12 +38,16 @@ var bundle = function(files, dest, opts) {
 };
 
 var browserify = function (mainFile, dest, shouldWatch) {
-    var // convert browserify into stream that gulp understands
+    var watchify = require('watchify'),
+        browserify = require('browserify'),
+        // convert browserify into stream that gulp understands
         source = require('vinyl-source-stream'),
         buffer = require('vinyl-buffer'),
+        // to import css files of libraries as well
+        browserifyCss = require('browserify-css'),
         path = require('path'),
         fse = require('fs-extra');
-
+ 
     var opt = {
         //debug: true,
     };
@@ -54,7 +59,7 @@ var browserify = function (mainFile, dest, shouldWatch) {
         var rootDir = process.cwd();
         var relativePath = stripQueryStringAndHashFromPath(relativeUrl);
         var queryStringAndHash = relativeUrl.substring(relativePath.length);
-
+ 
         //
         // Copying files from '/node_modules/bootstrap/' to 'dist/vendor/bootstrap/'
         //
@@ -63,31 +68,31 @@ var browserify = function (mainFile, dest, shouldWatch) {
             var vendorPath = 'client/assets/vendor/' + relativePath.substring(prefix.length);
             var source = path.join(rootDir, relativePath);
             var target = path.join(rootDir, vendorPath);
-
-            //$.util.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
+ 
+            //gutil.log('Copying file from '  JSON.stringify(source)  ' to '  JSON.stringify(target));
             fse.copySync(source, target);
-
+ 
             // Returns a new path string with original query string and hash fragments
             return vendorPath + queryStringAndHash;
         }
         return relativeUrl;
     }
-
-    return $.if(shouldWatch, $.watchify($.browserify(mainFile, opt)), $.browserify(mainFile, opt))
-        .transform($.browserifyCss, {
+ 
+    return $.if(shouldWatch, watchify(browserify(mainFile, opt)), browserify(mainFile, opt))
+        .transform(browserifyCss, {
             autoInject: true,
             rootDir: '.',
             processRelativeUrl: copyAssets
         })
         .bundle()
-        .on('error', $.util.log.bind($.util, 'Browserify Error'))
+        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
         .pipe(source(dest + '.js'))
-        .pipe(buffer())
-        .pipe($.sourcemaps.init({ loadMaps: true }))
-            .pipe($.uglify())
-            .pipe($.rename({ suffix: '.min' }))
-        .pipe($.sourcemaps.write('./'))
-        .pipe(gulp.dest('.'));
+         .pipe(buffer())
+         .pipe($.sourcemaps.init({ loadMaps: true }))
+             .pipe($.uglify())
+             .pipe($.rename({ suffix: '.min' }))
+         .pipe($.sourcemaps.write('./'))
+         .pipe(gulp.dest('.'));
 };
 
 function compile(files) {

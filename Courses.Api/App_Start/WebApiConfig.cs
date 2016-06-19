@@ -22,6 +22,8 @@ namespace Courses.Api
                 defaults: new { id = RouteParameter.Optional }
             );
 
+            config.EnableCors();
+
             // filters
             config.Filters.Add(new ErrorFilterAttribute());
             config.Filters.Add(new NotImplementedFilterAttribute());

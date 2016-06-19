@@ -22,7 +22,7 @@ namespace Courses.Services
 
         public virtual IReadOnlyCollection<T> All()
         {
-            return _repository.List().Select(ToDto).ToList();
+            return _repository.List().ToList().Select(ToDto).ToList();
         }
 
         public virtual T Get(Guid id)
