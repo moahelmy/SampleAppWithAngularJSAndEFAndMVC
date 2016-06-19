@@ -2,8 +2,7 @@
     'use strict';
 
     describe('api helper', function () {
-        var $q, $log, $rootScope, apiHelper;
-        var notifications
+        var $q, $log, $rootScope, apiHelper, notifications;
 
         beforeEach(module('courses.services'));
 
@@ -116,6 +115,34 @@
 
                 $rootScope.$apply();
                 expect(notifications.showError).toHaveBeenCalled();
+            });
+
+            it('should show error notification on exception', function () {
+                apiHelper.call({
+                    notifications: {
+                        error: { title: 'Error', message: 'Failed' },
+                    },
+                    action: function () {
+                        throw new Error('Error');
+                    }
+                });
+
+                $rootScope.$apply();
+                expect(notifications.showError).toHaveBeenCalled();
+            });
+
+            it('should log error on exception', function () {
+                apiHelper.call({
+                    notifications: {
+                        error: { title: 'Error', message: 'Failed' },
+                    },
+                    action: function () {
+                        throw new Error('Exception');
+                    }
+                });
+
+                $rootScope.$apply();                
+                expect($log.error.logs.length).toBe(1);
             });
 
             it('should return response.data if it has a value', function () {

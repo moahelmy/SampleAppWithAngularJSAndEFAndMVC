@@ -2,7 +2,7 @@
     'use strict';
 
     describe('http helper', function () {
-        var $httpBackend, httpHelper, settings;
+        var $httpBackend, httpClient, settings;
 
         beforeEach(module('courses.services'));
 
@@ -15,9 +15,9 @@
             });
         }));
 
-        beforeEach(inject(function (_$httpBackend_, _httpHelper_, _settings_) {
+        beforeEach(inject(function (_$httpBackend_, _httpClient_, _settings_) {
             $httpBackend = _$httpBackend_;
-            httpHelper = _httpHelper_;
+            httpClient = _httpClient_;
             settings = _settings_;
         }));
 
@@ -28,7 +28,7 @@
                 settings.webserviceUrl = 'http://wbtest.com';
                 var expectedUrl = 'http://wbtest.com/api/tests/';
 
-                var url = httpHelper.getUrl(apiUrl);
+                var url = httpClient.getUrl(apiUrl);
 
                 expect(url).toEqual(expectedUrl);
             });
@@ -38,7 +38,7 @@
                 settings.webserviceUrl = 'http://wbtest.com';
                 var expectedUrl = 'http://wbtest.com/api/tests/';
 
-                var url = httpHelper.getUrl(apiUrl);
+                var url = httpClient.getUrl(apiUrl);
 
                 expect(url).toEqual(expectedUrl);
             });
@@ -48,7 +48,7 @@
                 settings.webserviceUrl = 'http://wbtest.com/';
                 var expectedUrl = 'http://wbtest.com/api/tests/';
 
-                var url = httpHelper.getUrl(apiUrl);
+                var url = httpClient.getUrl(apiUrl);
 
                 expect(url).toEqual(expectedUrl);
             });
@@ -58,7 +58,7 @@
                 settings.webserviceUrl = 'http://wbtest.com/';
                 var expectedUrl = 'http://wbtest.com/api/tests/';
 
-                var url = httpHelper.getUrl(apiUrl);
+                var url = httpClient.getUrl(apiUrl);
 
                 expect(url).toEqual(expectedUrl);
             });
@@ -84,7 +84,7 @@
                         .respond(expectedCourses);
 
                 var courses = [];
-                httpHelper.get(coursesUrl, {}).then(function (data) {
+                httpClient.get(coursesUrl, {}).then(function (data) {
                     courses = data;
                 });
 
@@ -99,7 +99,7 @@
                         .respond(400, "Very bad request");
 
                 var courses = [];
-                httpHelper.get(coursesUrl, {}).then(function (data) {
+                httpClient.get(coursesUrl, {}).then(function (data) {
                     if (data) courses = data;
                 });
 
@@ -108,42 +108,42 @@
                 expect(courses).toEqual([]);
             });
 
-            it('should use GET method when httpHelper.get is called', function () {
+            it('should use GET method when httpClient.get is called', function () {
                 var url = wsUrl + coursesUrl;
                 $httpBackend.expectGET(url)
                         .respond(expectedCourses);
 
-                httpHelper.get(coursesUrl, {});
+                httpClient.get(coursesUrl, {});
 
                 $httpBackend.flush();
             });
 
-            it('should use POST method when httpHelper.post is called', function () {
+            it('should use POST method when httpClient.post is called', function () {
                 var url = wsUrl + coursesUrl, course = { name: 'Math' };
                 $httpBackend.when('POST', url, course)
                         .respond(200);
 
-                httpHelper.post(coursesUrl, course);
+                httpClient.post(coursesUrl, course);
 
                 $httpBackend.flush();
             });
 
-            it('should use PUT method when httpHelper.put is called', function () {
+            it('should use PUT method when httpClient.put is called', function () {
                 var url = wsUrl + coursesUrl + '?id=1', course = { name: 'Math' };
                 $httpBackend.expectPUT(url, course)
                         .respond(200);
 
-                httpHelper.put(coursesUrl, { id: 1 }, course);
+                httpClient.put(coursesUrl, { id: 1 }, course);
 
                 $httpBackend.flush();
             });
 
-            it('should use PUT method when httpHelper.put is called', function () {
+            it('should use PUT method when httpClient.put is called', function () {
                 var url = wsUrl + coursesUrl + '?id=1';
                 $httpBackend.expectDELETE(url)
                         .respond(200);
 
-                httpHelper.delete(coursesUrl, { id: 1 });
+                httpClient.delete(coursesUrl, { id: 1 });
 
                 $httpBackend.flush();
             });

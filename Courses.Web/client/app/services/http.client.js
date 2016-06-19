@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('courses.services')
-        .service('httpHelper', Helper);
+        .service('httpClient', Helper);
 
     function Helper($q, $http, settings) {
         'ngInject';
@@ -27,8 +27,7 @@
         /// =================== ///
 
         // this is useful when we need to add constant headers to all requests
-        // also, it's god because I can tailor the success and fail behavior
-        // same technique will apply for $resource
+        // also, it's good because I can tailor the success and fail behavior        
         function _http(url, method, params, data) {
             return $http({
                 method: method,
