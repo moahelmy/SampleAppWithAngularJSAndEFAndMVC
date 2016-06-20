@@ -19,6 +19,7 @@ namespace Courses.Api.Controllers
             _teachersService = teachersService;            
         }
 
+        [Route("api/teachers")]
         public IEnumerable<TeacherModel> Get()
         {
             return  _teachersService.All().Select(x => new TeacherModel
@@ -28,6 +29,7 @@ namespace Courses.Api.Controllers
             });
         }
 
+        [Route("api/teachers")]
         public TeacherModel Get(Guid id)
         {
             var teacher = _teachersService.Get(id);
@@ -38,6 +40,7 @@ namespace Courses.Api.Controllers
             };
         }
 
+        [Route("api/teachers")]
         public IHttpActionResult Post([FromBody]string name)
         {
             try {
@@ -50,6 +53,7 @@ namespace Courses.Api.Controllers
             }
         }
 
+        [Route("api/teachers")]
         public IHttpActionResult Put(Guid id, [FromBody]string name)
         {
             try
@@ -63,6 +67,7 @@ namespace Courses.Api.Controllers
             }
         }
 
+        [Route("api/teachers")]
         public IHttpActionResult Delete(Guid id)
         {
             var result = _teachersService.Delete(id);

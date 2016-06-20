@@ -20,11 +20,13 @@ namespace Courses.Api.Controllers
             _studentsService = studentsSvc;
         }
 
+        [Route("api/courses")]
         public IEnumerable<CourseViewModel> Get()
         {
             return _coursesService.ListAll().Select(x => Mapper.Map<CourseDetails, CourseViewModel>(x)).ToList();
         }
 
+        [Route("api/courses")]
         public CourseViewModel Get(Guid id)
         {
             var course = _coursesService.Get(id);
@@ -42,6 +44,7 @@ namespace Courses.Api.Controllers
             return ResultToHttpActionResult(result);            
         }
 
+        [Route("api/courses")]
         public IHttpActionResult Post([FromBody]CourseModel course)
         {
             if (!ModelState.IsValid)
@@ -50,6 +53,7 @@ namespace Courses.Api.Controllers
             return ResultToHttpActionResult(result);
         }
 
+        [Route("api/courses")]
         public IHttpActionResult Put(Guid id, [FromBody]CourseModel course)
         {
             if (!ModelState.IsValid)
@@ -60,6 +64,7 @@ namespace Courses.Api.Controllers
             return ResultToHttpActionResult(result);
         }
 
+        [Route("api/courses")]
         public IHttpActionResult Delete(Guid id)
         {
             var result = _coursesService.Delete(id);
