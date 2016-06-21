@@ -4,7 +4,7 @@
     angular.module('courses.services')
         .factory('resource', resourceFactory);
 
-    function resourceFactory(httpClient, apiHelper) {
+    function resourceFactory(httpClient, apiHelper, notifications) {
         'ngInject';
 
         /*  opts
@@ -71,9 +71,11 @@
 
                 var promise, method;
                 var id = getId(data);
+                notifications.clear();
                 if (id) {
                     method = 'save';
-                    promise = httpClient.put(url, { id: id }, data);
+                    url = url + '/' + id;
+                    promise = httpClient.put(url, {}, data);
                 } else {
                     method = 'create';
                     promise = httpClient.post(url, data);
@@ -89,6 +91,7 @@
                 var url = options.url || opts.url;
                 var value = {};
 
+                notifications.clear();
                 _call(httpClient.delete(url, { id: getId(data) }), options, 'delete', value);
 
                 return value;
@@ -98,9 +101,9 @@
                 options = options || {};
                 var url = options.url || opts.url;
                 var list = [];
-                
+
                 _apiCall(httpClient.get(url), options, 'load', true).then(function (data) {
-                    if (!angular.isArray(data)) {
+                    if (data && !angular.isArray(data)) {
                         throw new Error('Expected an array from the backend');
                     }
                     angular.forEach(data, function (value) {
@@ -118,7 +121,7 @@
                 options = options || {};
                 var url = options.url || opts.url;
                 var value = {};
-                
+
                 _call(httpClient.get(url, { id: id }), options, 'load', value);
 
                 return value;
@@ -138,7 +141,7 @@
 
             function _call(promise, options, method, value) {
                 _apiCall(promise, options, method).then(function (data) {
-                    if (angular.isArray(data)) {
+                    if (data && angular.isArray(data)) {
                         throw new Error('Expected single value from the backend');
                     }
                     angular.copy(data, value);

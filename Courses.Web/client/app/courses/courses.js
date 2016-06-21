@@ -8,7 +8,7 @@
         });
 
 
-    function CoursesListController(uiGridConstants, Course) {
+    function CoursesListController(uiGridConstants, Course, $uibModal, $templateCache) {
         'ngInject';
 
         var vm = this;
@@ -16,7 +16,7 @@
         vm.courses = Course.query();
         vm.course = {};
         vm.coursesGrid = {};
-        
+
         vm.add = addCourse;
         vm.edit = editCourse;
         vm.remove = removeCourse;
@@ -25,19 +25,57 @@
         /// ============== ///
 
         function _init() {
-            _initCoursesGrid();            
+            _initCoursesGrid();
         }
 
-        function addCourse(entity) {
-
+        function addCourse() {
+            _openDialog()
+                .result.then(function (course) {
+                    course && vm.courses.push(course);
+                });
         }
 
         function editCourse(entity) {
-
+            _openDialog(entity)
+                .result.then(function (course) {
+                    course && _updateCourse(entity, course);
+                });
         }
 
         function removeCourse(entity) {
+            _openDialog(entity, 'course.delete.dialog.html', 'CourseDeleteDialogController')
+                .result.then(function (course) {
+                course && _removeCourse(entity);
+            });
+        }
 
+        function _updateCourse(entity, course) {
+            var index = vm.courses.indexOf(entity);
+            index > -1 && (vm.courses[index] = course);
+        }
+
+        function _removeCourse(entity) {
+            var index = vm.courses.indexOf(entity);
+            index > -1 && vm.courses.splice(index, 1);
+        }
+
+        function _openDialog(course, viewName, ctrl) {
+            var tUrl = app.config.courses + (viewName || 'course.edit.dialog.html');
+            $templateCache.remove(tUrl);
+            return $uibModal.open({
+                animation: true,
+                templateUrl: tUrl,
+                controller: ctrl || 'CourseEditDialogController',
+                controllerAs: 'vm',
+                keyboard: true,
+                backdrop: 'static',
+                size: 'lg',
+                resolve: {
+                    course: function () {
+                        return course || null;
+                    }
+                }
+            })
         }
 
         function _initCoursesGrid() {
@@ -58,7 +96,7 @@
                     { field: 'delete', displayName: '', cellTemplate: 'delete-course-template', width: 40, enableSorting: false },
                     { name: 'Name', field: 'name', displayName: 'Name', width: '30%' },
                     { name: 'Location', field: 'location', displayName: 'Location', width: '40%' },
-                    { name: 'Teacher', field: 'teacher', displayName: 'Teacher', width: '25%' },
+                    { name: 'Teacher', field: 'teacherName', displayName: 'Teacher', width: '25%' },
                 ],
                 data: '$ctrl.courses',
             };
@@ -69,6 +107,6 @@
                     vm.students = vm.course.students;
                 });
             };
-        }        
+        }
     }
 })(app);

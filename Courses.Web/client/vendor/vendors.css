@@ -1,3 +1,5 @@
 ﻿@import url("/node_modules/bootstrap/dist/css/bootstrap.min.css");
 @import url("/node_modules/bootstrap/dist/css/bootstrap-theme.min.css");
 @import url("/node_modules/angular-ui-grid/ui-grid.min.css");
+@import url("/node_modules/ui-select/dist/select.min.css");
+@import url("/node_modules/angularjs-toaster/toaster.min.css");

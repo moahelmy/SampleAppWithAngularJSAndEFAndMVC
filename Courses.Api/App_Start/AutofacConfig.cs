@@ -31,6 +31,7 @@ namespace Courses.Api
             builder.RegisterSource(new ViewRegistrationSource());
 
             RegisterLayers(builder);
+            builder.Register(x => AutoMapperConfig.Configuration.CreateMapper());
 
             var container = builder.Build();
 

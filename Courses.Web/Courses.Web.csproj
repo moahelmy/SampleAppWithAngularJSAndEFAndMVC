@@ -98,6 +98,12 @@
     <Content Include="client\app\app.module.js" />
     <Content Include="client\app\common\common.module.js" />
     <Content Include="client\app\common\notifications.module.js" />
+    <Content Include="client\app\courses\course.edit.dialog.html" />
+    <Content Include="client\app\courses\course.edit.dialog.js" />
+    <Content Include="client\app\courses\course.edit.dialog.spec.js" />
+    <Content Include="client\app\courses\course.edit.html" />
+    <Content Include="client\app\courses\course.edit.js" />
+    <Content Include="client\app\courses\course.edit.spec.js" />
     <Content Include="client\app\courses\course.students.html" />
     <Content Include="client\app\courses\course.students.js" />
     <Content Include="client\app\common\notifications.js" />
@@ -110,12 +116,15 @@
     <Content Include="client\app\directives\footer.spec.js" />
     <Content Include="client\app\directives\header.js" />
     <Content Include="client\app\directives\header.spec.js" />
+    <Content Include="client\app\directives\views\date.picker.html" />
     <Content Include="client\app\directives\views\footer.html" />
     <Content Include="client\app\directives\views\header.html" />
     <Content Include="client\app\services\api.helper.js" />
     <Content Include="client\app\services\api.helper.spec.js" />
     <Content Include="client\app\services\course.resource.spec.js" />
     <Content Include="client\app\services\course.resource.js" />
+    <Content Include="client\app\services\data.transform.js" />
+    <Content Include="client\app\services\data.transform.spec.js" />
     <Content Include="client\app\services\http.client.js" />
     <Content Include="client\app\services\http.client.spec.js" />
     <Content Include="client\app\services\resource.js" />
@@ -123,6 +132,8 @@
     <Content Include="client\app\services\service.module.js" />
     <Content Include="client\app\services\student.resource.js" />
     <Content Include="client\app\services\student.resource.spec.js" />
+    <Content Include="client\app\services\teachers.resource.js" />
+    <Content Include="client\app\services\teachers.resource.spec.js" />
     <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.eot" />
     <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.svg" />
     <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.ttf" />
@@ -148,6 +159,7 @@
     <Content Include="client\dist\app.min.js.map" />
     <Content Include="client\dist\vendors.min.js.map" />
     <Content Include="client\json\courses.json" />
+    <Content Include="client\app\directives\date.picker.js" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

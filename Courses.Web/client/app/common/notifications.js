@@ -3,7 +3,7 @@
 
     var Notifications = (function () {
         function Notifications(toaster) {
-            var self = this, _id = 1;
+            var self = this;
 
             self.showError = showError;
             self.showSuccess = showSuccess;
@@ -39,17 +39,13 @@
             }
 
             function notifyMessage(title, message, timeout, type) {
-                var id = _id++;
-                toaster.pop({
+                return toaster.pop({
                     type: type,
                     title: title,
                     body: message,
                     timeout: timeout,
                     notifyCloseButton: true,
-                    toastId: id,
-                });
-
-                return id;
+                }).toastId;
             }
 
             function showErrors(errorMessages, title) {

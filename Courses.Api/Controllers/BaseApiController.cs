@@ -1,4 +1,5 @@
 ﻿using Swart.DomainDrivenDesign;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -28,6 +29,13 @@ namespace Courses.Api.Controllers
         {
             if (result.Succeed)
                 return Ok(result.Return);
+            return BadRequest(ConstructErrorMessages(result));
+        }
+
+        protected IHttpActionResult ResultToHttpActionResult<T, TValue>(IResult<T> result, Func<T, TValue> transform)
+        {
+            if (result.Succeed)
+                return Ok(transform(result.Return));
             return BadRequest(ConstructErrorMessages(result));
         }
 

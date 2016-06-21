@@ -10,16 +10,17 @@ namespace Courses.Api.Controllers
 {
     // At the moment I'm ignoreing security
     //[Authorize]
+    [RoutePrefix("api/teachers")]
     public class TeachersController : BaseApiController
     {
-        private readonly ITeachersService _teachersService;
+        private readonly ITeachersService _teachersService;        
 
         public TeachersController(ITeachersService teachersService)
         {
-            _teachersService = teachersService;            
+            _teachersService = teachersService;
         }
 
-        [Route("api/teachers")]
+        [Route("")]
         public IEnumerable<TeacherModel> Get()
         {
             return  _teachersService.All().Select(x => new TeacherModel
@@ -29,7 +30,7 @@ namespace Courses.Api.Controllers
             });
         }
 
-        [Route("api/teachers")]
+        [Route("{id:Guid}")]
         public TeacherModel Get(Guid id)
         {
             var teacher = _teachersService.Get(id);
@@ -40,7 +41,7 @@ namespace Courses.Api.Controllers
             };
         }
 
-        [Route("api/teachers")]
+        [Route("")]
         public IHttpActionResult Post([FromBody]string name)
         {
             try {
@@ -53,7 +54,7 @@ namespace Courses.Api.Controllers
             }
         }
 
-        [Route("api/teachers")]
+        [Route("{id:Guid}")]
         public IHttpActionResult Put(Guid id, [FromBody]string name)
         {
             try
@@ -67,7 +68,7 @@ namespace Courses.Api.Controllers
             }
         }
 
-        [Route("api/teachers")]
+        [Route("{id:Guid}")]
         public IHttpActionResult Delete(Guid id)
         {
             var result = _teachersService.Delete(id);

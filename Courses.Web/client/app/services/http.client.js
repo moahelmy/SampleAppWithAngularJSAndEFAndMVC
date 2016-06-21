@@ -4,7 +4,7 @@
     angular.module('courses.services')
         .service('httpClient', Helper);
 
-    function Helper($q, $http, settings) {
+    function Helper($q, $http, settings, transformData) {
         'ngInject';
 
         var self = this;
@@ -33,11 +33,12 @@
             $http({
                 method: method,
                 url: getUrl(url),
+                data: data,                
+                headers: { contentType: "application/json; charset=utf-8" },
                 params: params,
-                headers: { 'Content-Type': 'application/json;' },                
-                data: data
             }).then(function (response) {
-                return deferred.resolve(response && response.data || response);
+                var data = response && response.data;                
+                return deferred.resolve(data ? transformData(data) : response);
             }).catch(function (response) {
                 deferred.reject(response);
             });

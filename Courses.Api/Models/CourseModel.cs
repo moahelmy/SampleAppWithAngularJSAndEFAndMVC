@@ -10,8 +10,7 @@ namespace Courses.Api.Models
         [Required(AllowEmptyStrings = false)]
         public string BuildingNumber;
         [Required(AllowEmptyStrings = false)]
-        public string RoomNumber;
-        [Required]
+        public string RoomNumber;        
         public Guid? TeacherId { set; get; }
         [Required(AllowEmptyStrings = false)]
         public string TeacherName { set; get; }

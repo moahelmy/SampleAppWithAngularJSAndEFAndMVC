@@ -3,7 +3,7 @@
 
     describe('custom resource', function () {
         var httpClient, apiHelper, resource, $rootScope, $q;
-        var baseUrl = './', relativeUrl = 'api/tests', fullUrl = './api/tests';        
+        var baseUrl = './', relativeUrl = 'api/tests', fullUrl = './api/tests';
 
         angular.module('courses.settings', []);
         beforeEach(module(function ($provide) {
@@ -300,7 +300,7 @@
             it('should hit put on httpClient if entity exists', function () {
                 var data = prepare(false);
 
-                expect(httpClient.put).toHaveBeenCalledWith(relativeUrl, { id: result.id }, result);
+                expect(httpClient.put).toHaveBeenCalledWith(relativeUrl + '/' + result.id, jasmine.any(Object), result);
             });
 
             it('should use options.url if defined', function () {
@@ -473,6 +473,6 @@
                     description: resourceOptions.name
                 }));
             });
-        });        
+        });
     });
 })();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Courses.Api.Models;
 using Courses.DataTransferObjects;
+using System;
 
 namespace Courses.Api
 {
@@ -20,7 +21,7 @@ namespace Courses.Api
                     .ForMember(vm => vm.TeacherId, opt => opt.MapFrom(ct => ct.Teacher.Id))
                     .ForMember(vm => vm.TeacherName, opt => opt.MapFrom(ct => ct.Teacher.Name));
                 cfg.CreateMap<CourseModel, CourseDetails>()
-                    .ForMember(m => m.Teacher, opt => opt.MapFrom(ct => new IdNamePair { Id = ct.TeacherId.Value, Name = ct.TeacherName }));
+                    .ForMember(m => m.Teacher, opt => opt.MapFrom(ct => new IdNamePair { Id = ct.TeacherId ?? Guid.Empty, Name = ct.TeacherName }));
             });
             
             return Configuration;

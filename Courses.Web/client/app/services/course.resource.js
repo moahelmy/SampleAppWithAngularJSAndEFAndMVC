@@ -9,7 +9,7 @@
 
         var courseResource = resource({
             url: 'api/courses',
-            nameList: 'Course',
+            listName: 'Course',
             name: 'course'
         });
 

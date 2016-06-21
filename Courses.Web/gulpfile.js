@@ -38,7 +38,7 @@ gulp.task('clean:js', function (cb) {
 
 gulp.task('scripts', ['clean:js'], function () {
     log('Bundling js into ' + config.app.dest + ' ...');
-    return helper.bundle(config.appList(), config.app.dest, config.compile);
+    return helper.bundle(config.appList(), config.app.dest, { debug: config.debug, compile: config.compile });
 });
 
 gulp.task('watch:js', function () {
@@ -54,18 +54,18 @@ if (config.bundleVendors) {
 
     gulp.task('vendors', ['clean:vendors'], function () {
         if (config.browserify) {
-            log('Bundling 3rd party libs using browserify into ' + config.app.dest + ' ...');
-            return helper.browserify(config.vendors.main, config.vendors.dest, false);
+            log('Bundling 3rd party libs using browserify into ' + config.vendors.dest + ' ...');
+            return helper.browserify(config.vendors.main, config.vendors.dest, false, config.debug);
         }
         else {
             log('Bundling 3rd party libs into ' + config.app.dest + ' ...');
-            return helper.bundle(config.vendors.list, config.vendors.dest, { compile: false });
+            return helper.bundle(config.vendors.list, config.vendors.dest, { compile: false, debug: config.debug });
         }
     });
 
     gulp.task('watch:vendors', function () {
         if (config.browserify) {
-            return helper.browserify(config.vendors.main, config.vendors.dest, true);
+            return helper.browserify(config.vendors.main, config.vendors.dest, true, config.debug);
         }
         else {
             return gulp.watch(config.vendors.list, ['vendors']);

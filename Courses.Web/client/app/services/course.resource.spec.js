@@ -1,11 +1,11 @@
 ﻿(function () {
     'use strict';
 
-    describe('courses service', function () {        
+    describe('courses service', function () {
         var $httpBackend, baseUrl = './', Course, coursesList = [{
                 name: 'Biology',
                 location: 'Building 1 - Room 102',
-                teacher: 'Adam Smith',            
+                teacher: 'Adam Smith',
             }
         ], studentsList = [{
             name: 'Mohammad Helmy',
@@ -37,13 +37,18 @@
                 ]);
             });
         }));
-        beforeEach(module('courses.services'));        
+        beforeEach(module('courses.services'));
 
         beforeEach(inject(function (_Course_, _$httpBackend_) {
-            $httpBackend = _$httpBackend_;            
+            $httpBackend = _$httpBackend_;
 
             Course = _Course_;
         }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
 
         it('should populate courses from backend', function () {
             $httpBackend.expectGET('./api/courses')

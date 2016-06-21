@@ -1,0 +1,17 @@
+﻿<div class="modal-header">
+    <div class="row">
+        <div class="col-md-10">
+            <h3><span>Course Details</span></h3>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-info pull-right" ng-click="vm.cancel()"><i class="glyphicon glyphicon-remove"></i></button>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+    <course-edit course="vm.course"></course-edit>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.save()" ng-disabled="courseForm.$invalid">Save</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+</div>

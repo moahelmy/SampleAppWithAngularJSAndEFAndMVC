@@ -1,0 +1,19 @@
+﻿<p class="input-group" style="max-width:400px;">
+    <input name="{{ field }}"
+           type="text"
+           style="width:100% !important" class="form-control"
+           uib-datepicker-popup="{{ vm.format }}"
+           is-open="vm.isOpened"
+           clear-text="{{ vm.clearText }}"
+           close-text="{{ vm.closeText }}"
+           current-text="{{ vm.currentText }}"
+           alt-input-formats="altInputFormats"
+           datepicker-options="datepickerOptions"
+           ng-model="ngModel"
+           ng-required="ngRequired"
+           ng-change="vm.onDateChange()"
+           ng-readonly="{{ vm.isReadOnly() }}" />
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-default" style="height: 34px;" ng-click="vm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+    </span>
+</p>

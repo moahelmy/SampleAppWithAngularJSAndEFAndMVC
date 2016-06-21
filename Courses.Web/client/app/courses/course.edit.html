@@ -1,0 +1,76 @@
+﻿<form name="courseForm" novalidate>
+
+    <div class="form-group" ng-class="{ 'has-error' :  courseForm.name.$invalid, 'has-success': courseForm.name.$valid  }">
+        <label for="name">
+            Name
+        </label>
+        <input type="text"
+               name="name"
+               placeholder="Course Name"
+               class="form-control"
+               ng-model="$ctrl.course.name" />
+        <div class="help-block" ng-messages="courseFrom.name.$error">
+            <p ng-message="required">Course is required.</p>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' :  courseForm.buildingNumber.$invalid, 'has-success': courseForm.buildingNumber.$valid  }">
+        <label for="buildingNumber">
+            Building Number
+        </label>
+        <input type="text"
+               name="name"
+               placeholder="Building Number"
+               class="form-control"
+               ng-model="$ctrl.course.buildingNumber" />
+        <div class="help-block" ng-messages="courseFrom.buildingNumber.$error">
+            <p ng-message="required">Building number is required.</p>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' :  courseForm.roomNumber.$invalid, 'has-success': courseForm.roomNumber.$valid  }">
+        <label for="buildingNumber">
+            Room Number
+        </label>
+        <input type="text"
+               name="name"
+               placeholder="Room Number"
+               class="form-control"
+               ng-model="$ctrl.course.roomNumber" />
+        <div class="help-block" ng-messages="courseFrom.roomNumber.$error">
+            <p ng-message="required">Room number is required.</p>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' :  courseForm.teacherName.$invalid,
+                                                'has-success': courseForm.teacherName.$valid  }">
+        <label for="buildingNumber">
+            Teacher
+        </label>
+        <div class="row">
+            <div class="col-md-6">
+                <ui-select name="teacher"                           
+                           ng-model="$ctrl.teacher"                           
+                           ng-disabled="disabled"
+                           style="min-width: 400px;"
+                           ng-required="true"
+                           on-select="$ctrl.teacherSelected($item)">
+                    <ui-select-match placeholder="Select teacher">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="teacher in $ctrl.teachers | filter: {name: $select.search}">
+                        <div ng-bind-html="teacher.name | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-md-6">
+                <input type="text"
+                       name="teacherName"
+                       class="form-control"
+                       placeholder="Teacher Name"
+                       ng-model="$ctrl.course.teacherName" />
+            </div>
+        </div>
+        <div class="help-block" ng-messages="courseFrom.teacherName.$error">
+            <p ng-message="required">Teacher is required.</p>
+        </div>
+    </div>
+</form>

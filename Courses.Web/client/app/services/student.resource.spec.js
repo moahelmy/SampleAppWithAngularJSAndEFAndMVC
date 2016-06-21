@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    describe('courses service', function () {
+    describe('students service', function () {
         var baseUrl = './', $httpBackend, Student, studentsList = [{
             name: 'Mohammad Helmy',
             age: '33',
@@ -40,6 +40,11 @@
                         .respond(studentsList);
             Student = _Student_;
         }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
 
         it('should populate courses from backend', function () {
             var students = Student.query();

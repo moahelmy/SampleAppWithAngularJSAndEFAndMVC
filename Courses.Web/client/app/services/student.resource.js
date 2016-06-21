@@ -9,7 +9,7 @@
 
         return resource({
             url: 'api/students',
-            nameList: 'Students',
+            listName: 'Students',
             name: 'Student'
         });
     }

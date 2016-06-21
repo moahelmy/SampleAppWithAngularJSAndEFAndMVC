@@ -5,7 +5,7 @@
 };
 
 var appList = function () {
-    var config = this;    
+    var config = this;
     if (config.app.list && config.app.list.length > 0)
         return config.app.list;
 
@@ -13,10 +13,10 @@ var appList = function () {
     config.app.ngModules && src.push(config.app.ngModules);
     src.push(config.app.src);
     config.app.minified && src.push('!' + config.app.minified);
-    config.app.specs && src.push('!' + config.app.specs);    
+    config.app.specs && src.push('!' + config.app.specs);
     var exc = constructExclude(config.app.exclude);
     src = src.concat(exc);
-    
+
     return src;
 };
 
@@ -28,6 +28,7 @@ var cssList = function () {
 };
 
 module.exports = {
+    debug: true,
     bundleVendors: true,
     compile: true,
     browserify: true,

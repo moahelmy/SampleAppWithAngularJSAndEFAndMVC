@@ -83,8 +83,8 @@
                 })
                 .catch(function (response) {
                     if (notificationId) notifications.remove(notificationId);
-                    if (response.statusText) {
-                        notifications.showError('Error', response.statusText);
+                    if (response.data && response.data.message) {
+                        notifications.showError('Error', response.data.message);
                     } else {
                         if (errorNotification) notifications.showError(errorNotification.title, errorNotification.message);
                     }
