@@ -17,20 +17,6 @@
             });
         }));
 
-        beforeEach(module('courses.notifications'));
-        beforeEach(module(function ($provide) {
-            $provide.factory('notifications', function () {
-                return jasmine.createSpyObj('notification', [
-                    'showError',
-                    'showSuccess',
-                    'showInfo',
-                    'showSpinner',
-                    'showErrors',
-                    'clear',
-                    'remove'
-                ]);
-            });
-        }));
         beforeEach(module('courses.services'));
 
         beforeEach(inject(function (_Student_, _$httpBackend_) {

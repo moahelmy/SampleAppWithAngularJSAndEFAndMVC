@@ -4,6 +4,7 @@
     describe('add/edit courses', function () {
         var Course, ctrl, $httpBackend, $uibModalInstance;
 
+        beforeEach(module('courses.main'));
         angular.module('courses.settings', []);
         beforeEach(module(function ($provide) {
             $provide.factory('settings', function () {
@@ -12,24 +13,6 @@
                 };
             });
         }));
-
-        beforeEach(module('courses.notifications'));
-        beforeEach(module(function ($provide) {
-            $provide.factory('notifications', function () {
-                return jasmine.createSpyObj('notification', [
-                    'showError',
-                    'showSuccess',
-                    'showInfo',
-                    'showSpinner',
-                    'showErrors',
-                    'clear',
-                    'remove'
-                ]);
-            });
-        }));
-        beforeEach(module('courses.services'));
-        beforeEach(module('courses.common'));
-        beforeEach(module('courses.main'));
 
         beforeEach(module(function ($provide) {
             $provide.factory('$uibModalInstance', function () {

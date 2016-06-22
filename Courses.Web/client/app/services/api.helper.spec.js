@@ -6,7 +6,6 @@
 
         beforeEach(module('courses.services'));
 
-        angular.module('courses.notifications', []);
         beforeEach(module(function ($provide) {
             $provide.factory('notifications', function () {
                 return jasmine.createSpyObj('notification', [

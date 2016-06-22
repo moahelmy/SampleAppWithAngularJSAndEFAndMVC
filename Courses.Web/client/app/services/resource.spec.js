@@ -14,21 +14,6 @@
             });
         }));
 
-        angular.module('courses.notifications', []);
-        beforeEach(module(function ($provide) {
-            $provide.factory('notifications', function () {
-                return jasmine.createSpyObj('notification', [
-                    'showError',
-                    'showSuccess',
-                    'showInfo',
-                    'showSpinner',
-                    'showErrors',
-                    'clear',
-                    'remove'
-                ]);
-            });
-        }));
-
         beforeEach(module('courses.services'));
 
         beforeEach(inject(function (_httpClient_, _apiHelper_, _resource_, _$rootScope_, _$q_) {

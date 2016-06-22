@@ -14,6 +14,7 @@
             }
         ];
 
+        beforeEach(module('courses.main'));        
         angular.module('courses.settings', []);
         beforeEach(module(function ($provide) {
             $provide.factory('settings', function () {
@@ -21,25 +22,7 @@
                     webserviceUrl: '.'
                 };
             });
-        }));
-
-        beforeEach(module('courses.notifications'));
-        beforeEach(module(function ($provide) {
-            $provide.factory('notifications', function () {
-                return jasmine.createSpyObj('notification', [
-                    'showError',
-                    'showSuccess',
-                    'showInfo',
-                    'showSpinner',
-                    'showErrors',
-                    'clear',
-                    'remove'
-                ]);
-            });
-        }));
-        beforeEach(module('courses.services'));
-        beforeEach(module('courses.common'));
-        beforeEach(module('courses.main'));
+        }));       
 
         afterEach(function () {
             $httpBackend.verifyNoOutstandingExpectation();

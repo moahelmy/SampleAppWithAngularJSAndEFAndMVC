@@ -27,8 +27,9 @@ module.exports = function (config) {
           'node_modules/angular-ui-grid/ui-grid.js',
           'node_modules/angularjs-toaster/toaster.js',
           'node_modules/angular-mocks/angular-mocks.js',
+          'client/app/common/*.js',
           'client/app/**/_*.js',
-          'client/app/**/*.module.js',
+          'client/app/**/*.module.js',          
           'client/app/**/!(_)*!(module|spec).js',
           'client/app/**/*.spec.js'
         ],
