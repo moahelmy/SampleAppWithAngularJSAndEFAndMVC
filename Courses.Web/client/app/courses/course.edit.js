@@ -4,14 +4,14 @@
     angular.module('courses.main')
         .component('courseEdit', {
             templateUrl: app.config.courses + 'course.edit.html',
-            controller: EditCoursesController,
+            controller: EditCourseController,
             bindings: {
                 course: '=',
             }
         });
 
 
-    function EditCoursesController(Teacher) {
+    function EditCourseController(Teacher) {
         'ngInject';
 
         var vm = this;

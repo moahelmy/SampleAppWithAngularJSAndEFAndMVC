@@ -92,7 +92,7 @@
                 var value = {};
 
                 notifications.clear();
-                _call(httpClient.delete(url, { id: getId(data) }), options, 'delete', value);
+                _call(httpClient.delete(url + '/' + getId(data), {}), options, 'delete', value);
 
                 return value;
             }

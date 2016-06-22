@@ -1,8 +1,8 @@
 ﻿(function () {
     'use strict';
 
-    describe('edit courses', function () {
-        var Course, ctrl, $httpBackend;
+    describe('add/edit courses', function () {
+        var Course, ctrl, $httpBackend, $uibModalInstance;
 
         angular.module('courses.settings', []);
         beforeEach(module(function ($provide) {
@@ -35,7 +35,7 @@
             $provide.factory('$uibModalInstance', function () {
                 return jasmine.createSpyObj('$uibModalInstance', [
                     'close',
-                    'cancel',
+                    'dismiss',
                 ]);
             });
             $provide.factory('course', function () {
@@ -43,9 +43,10 @@
             });
         }));
 
-        beforeEach(inject(function ($controller, _$httpBackend_) {
+        beforeEach(inject(function ($controller, _$httpBackend_, _$uibModalInstance_) {
             ctrl = $controller('CourseEditDialogController');
             $httpBackend = _$httpBackend_;
+            $uibModalInstance = _$uibModalInstance_;
         }));
 
         afterEach(function () {
@@ -59,6 +60,22 @@
             ctrl.save();
 
             $httpBackend.flush();
+        });
+
+        it('should close dialog on save', function () {
+            $httpBackend.expectPOST('./api/courses').respond(200);
+
+            ctrl.save();
+
+            $httpBackend.flush();
+
+            expect($uibModalInstance.close).toHaveBeenCalled();
+        });
+
+        it('should close dialog on cancel', function () {
+            ctrl.cancel();
+
+            expect($uibModalInstance.dismiss).toHaveBeenCalled();
         });
     });
 })();

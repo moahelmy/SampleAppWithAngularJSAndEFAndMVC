@@ -9,23 +9,22 @@ var appList = function () {
     if (config.app.list && config.app.list.length > 0)
         return config.app.list;
 
-    var src = config.app.nonAngular;
-    config.app.ngModules && src.push(config.app.ngModules);
-    src.push(config.app.src);
-    config.app.minified && src.push('!' + config.app.minified);
-    config.app.specs && src.push('!' + config.app.specs);
+    var src = config.app.include;
     var exc = constructExclude(config.app.exclude);
-    src = src.concat(exc);
-
-    return src;
+    return src.concat(exc);
 };
 
 var cssList = function () {
     var config = this;
-    var src = [config.css.src, '!' + config.css.minified];
+    var src = config.css.include;
     var exc = constructExclude(config.css.exclude);
     return src.concat(exc);
 };
+
+var appRoot = 'client/app/';
+var stylesRoot = 'client/styles/';
+var vendorsRoot = 'client/vendor/';
+var distRoot = 'client/dist/';
 
 module.exports = {
     debug: true,
@@ -34,25 +33,28 @@ module.exports = {
     browserify: true,
     log: true,
     vendors: {
-        main: 'client/vendor/vendors.js',
+        main: vendorsRoot + 'vendors.js',
         list: [],
-        dest: 'client/dist/vendors',
+        dest: distRoot + 'vendors',
     },
     app: {
         list: [],
-        nonAngular: ['client/app/**/_*.js'],
-        ngModules: 'client/app/**/*.module.js',
-        src: 'client/app/**/*.js',
-        minified: 'client/app/**/*.min.js',
-        specs: 'client/app/**/*.spec.js',
-        exclude: [],
+        include: [
+                    appRoot + '**/_*.js',
+                    appRoot + '**/*.module.js',
+                    appRoot + 'common/!(_)*!(module).js',
+                    appRoot + '**/*.js',
+                ],
+        exclude: [
+                    appRoot + '**/*.min.js',
+                    appRoot + '**/*.spec.js',
+                ],
         dest: 'client/dist/app',
     },
     css: {
-        src: 'client/styles/**/*.css',
-        minified: 'client/styles/**/*.min.js',
-        exclude: [],
-        dest: 'client/dist/styles',
+        include: [stylesRoot + '**/*.css'],
+        exclude: [stylesRoot + '**/*.min.css'],
+        dest: distRoot + 'styles',
     },
     appList: appList,
     cssList: cssList,

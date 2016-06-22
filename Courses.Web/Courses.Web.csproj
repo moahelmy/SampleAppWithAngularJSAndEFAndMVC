@@ -97,7 +97,11 @@
   <ItemGroup>
     <Content Include="client\app\app.module.js" />
     <Content Include="client\app\common\common.module.js" />
+    <Content Include="client\app\common\dialogs.js" />
     <Content Include="client\app\common\notifications.module.js" />
+    <Content Include="client\app\courses\course.delete.dialog.html" />
+    <Content Include="client\app\courses\course.delete.dialog.js" />
+    <Content Include="client\app\courses\course.delete.dialog.spec.js" />
     <Content Include="client\app\courses\course.edit.dialog.html" />
     <Content Include="client\app\courses\course.edit.dialog.js" />
     <Content Include="client\app\courses\course.edit.dialog.spec.js" />
@@ -108,6 +112,8 @@
     <Content Include="client\app\courses\course.students.js" />
     <Content Include="client\app\common\notifications.js" />
     <Content Include="client\app\common\_config.js" />
+    <Content Include="client\app\courses\course.view.html" />
+    <Content Include="client\app\courses\course.view.js" />
     <Content Include="client\app\courses\courses.js" />
     <Content Include="client\app\courses\courses.spec.js" />
     <Content Include="client\app\courses\courses.html" />

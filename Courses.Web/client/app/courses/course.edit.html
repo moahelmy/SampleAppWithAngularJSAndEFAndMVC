@@ -29,7 +29,7 @@
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' :  courseForm.roomNumber.$invalid, 'has-success': courseForm.roomNumber.$valid  }">
-        <label for="buildingNumber">
+        <label for="roomNumber">
             Room Number
         </label>
         <input type="text"
@@ -49,8 +49,8 @@
         </label>
         <div class="row">
             <div class="col-md-6">
-                <ui-select name="teacher"                           
-                           ng-model="$ctrl.teacher"                           
+                <ui-select name="teacher"
+                           ng-model="$ctrl.teacher"
                            ng-disabled="disabled"
                            style="min-width: 400px;"
                            ng-required="true"

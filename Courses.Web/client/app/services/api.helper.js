@@ -88,7 +88,7 @@
                     } else {
                         if (errorNotification) notifications.showError(errorNotification.title, errorNotification.message);
                     }
-                    deferred.reject(response);                    
+                    deferred.reject(response);
                 });
             }
             catch (ex) {

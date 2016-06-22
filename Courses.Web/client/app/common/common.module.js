@@ -3,6 +3,7 @@
 	angular.module('courses.common', [
 			/* Angular modules */
 			'ngMessages',
+			'ngSanitize',
 
 			/* Cross-app modules */
 			'courses.settings',

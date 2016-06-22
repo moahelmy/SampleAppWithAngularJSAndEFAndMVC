@@ -2,6 +2,7 @@
 
 require('angular');
 require('angular-messages');
+require('angular-sanitize');
 require('angular-animate');
 require('angular-resource');
 require('angular-ui-bootstrap');

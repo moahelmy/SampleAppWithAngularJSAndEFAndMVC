@@ -25,8 +25,8 @@
         _init();
         /// ============== ///
 
-        function _init() {            
-            _initStudentsGrid();            
+        function _init() {
+            _initStudentsGrid();
         }
 
         function addStudent(entity) {

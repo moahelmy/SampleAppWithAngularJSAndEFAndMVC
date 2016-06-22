@@ -395,14 +395,14 @@
             it('should hit delete on httpClient', function () {
                 var data = prepare();
 
-                expect(httpClient.delete).toHaveBeenCalledWith(relativeUrl, { id: 1 });
+                expect(httpClient.delete).toHaveBeenCalledWith(relativeUrl + '/1', {});
             });
 
             it('should use options.url if defined', function () {
                 var testUrl = 'api/users';
                 var data = prepare({ url: testUrl });
 
-                expect(httpClient.delete).toHaveBeenCalledWith(testUrl, { id: 1 });
+                expect(httpClient.delete).toHaveBeenCalledWith(testUrl + '/1', {});
             });
 
             it('should fill data after call back', function () {

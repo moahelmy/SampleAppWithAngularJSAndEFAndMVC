@@ -17,7 +17,7 @@ gulp.task('clean:css', function (cb) {
     rimraf(config.css.dest + '*.css*', cb);
 });
 
-gulp.task('styles', ['clean:css'], function () {
+gulp.task('styles', ['clean:css'], function () {    
     log('Minifying styles into ' + config.css.dest + ' ...');
     return gulp.src(config.cssList())
         .pipe(concat(config.css.dest + '.min.css'))

@@ -29,6 +29,7 @@ var app = {
 	angular.module('courses.common', [
 			/* Angular modules */
 			'ngMessages',
+			'ngSanitize',
 
 			/* Cross-app modules */
 			'courses.settings',
@@ -60,12 +61,10 @@ var app = {
 (function () {
     'use strict';
 
-    angular.module('courses.notifications', ['toaster']);
+    angular.module('courses.services', ['courses.notifications', 'courses.settings']);
 })();
 (function () {
-    'use strict';
 
-    angular.module('courses.services', ['courses.notifications', 'courses.settings']);
 })();
 (function () {
     'use strict';
@@ -128,7 +127,7 @@ var app = {
         return Notifications;
     })();
 
-    angular.module('courses.notifications')
+    angular.module('courses.notifications', ['toaster'])
             .service('notifications', Notifications);
 })();
 (function (app) {
@@ -228,6 +227,37 @@ var app = {
     'use strict';
 
     angular.module('courses.main')
+        .controller('CourseDeleteDialogController', EditCoursesController);
+
+
+    function EditCoursesController(Course, $uibModalInstance, course) {
+        'ngInject';
+
+        var vm = this;
+
+        vm.course = course || {};
+        vm.delete = _delete;
+        vm.cancel = cancel;
+
+        /// ============== ///
+
+        function _delete() {
+            Course.delete(vm.course, {
+                success: function (data) {
+                    $uibModalInstance.close(data);
+                }
+            });
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('courses.main')
         .controller('CourseEditDialogController', EditCoursesController);
 
 
@@ -261,14 +291,14 @@ var app = {
     angular.module('courses.main')
         .component('courseEdit', {
             templateUrl: app.config.courses + 'course.edit.html',
-            controller: EditCoursesController,
+            controller: EditCourseController,
             bindings: {
                 course: '=',
             }
         });
 
 
-    function EditCoursesController(Teacher) {
+    function EditCourseController(Teacher) {
         'ngInject';
 
         var vm = this;
@@ -314,8 +344,8 @@ var app = {
         _init();
         /// ============== ///
 
-        function _init() {            
-            _initStudentsGrid();            
+        function _init() {
+            _initStudentsGrid();
         }
 
         function addStudent(entity) {
@@ -356,6 +386,26 @@ var app = {
         }
     }
 
+})(app);
+(function (app) {
+    'use strict';
+
+    angular.module('courses.main')
+        .component('courseView', {
+            templateUrl: app.config.courses + 'course.view.html',
+            controller: ViewCourseController,
+            bindings: {
+                course: '=',
+            }
+        });
+
+
+    function ViewCourseController() {
+        'ngInject';
+
+        var vm = this;
+        vm.course = vm.course || {};
+    }
 })(app);
 (function (app) {
     'use strict';
@@ -559,7 +609,7 @@ var app = {
                     } else {
                         if (errorNotification) notifications.showError(errorNotification.title, errorNotification.message);
                     }
-                    deferred.reject(response);                    
+                    deferred.reject(response);
                 });
             }
             catch (ex) {
@@ -645,8 +695,12 @@ var app = {
 
             for (var prop in data) {
                 if (data.hasOwnProperty(prop)) {
-                    var newPropName = prop.charAt(0).toLowerCase() + prop.substring(1);
-                    newPropName = newPropName.replace(' ', '').replace('-', '');
+                    var newPropName = _lowerFirstLetter(prop);
+                    var splitted = newPropName.split(/[\s-_]+/);
+                    for (var i = 1; i < splitted.length; i++) {
+                        splitted[i] = _upperFirstLetter(splitted[i]);
+                    }
+                    newPropName = splitted.join('');
                     obj[newPropName] = data[prop];
                 }
             }
@@ -654,11 +708,19 @@ var app = {
             return obj;
         }
 
-        function transform(data) {
+        function _lowerFirstLetter(val) {
+            return val !== '' && val.charAt(0).toLowerCase() + val.substring(1);
+        }
+
+        function _upperFirstLetter(val) {
+            return val !== '' && val.charAt(0).toUpperCase() + val.substring(1);
+        }
+
+        function _transform(data) {
             if (angular.isArray(data)) {
                 var arr = [];
                 for (var i = 0; i < data.length; i++) {
-                    arr.push(transform(data[i]));
+                    arr.push(_transform(data[i]));
                 }
                 return arr;
             }
@@ -669,7 +731,7 @@ var app = {
         }
 
         return function (data) {
-            return angular.isDefined(data) ? transform(data) : data;
+            return angular.isDefined(data) ? _transform(data) : data;
         };
     }
 
@@ -827,7 +889,7 @@ var app = {
                 var value = {};
 
                 notifications.clear();
-                _call(httpClient.delete(url, { id: getId(data) }), options, 'delete', value);
+                _call(httpClient.delete(url + '/' + getId(data), {}), options, 'delete', value);
 
                 return value;
             }
