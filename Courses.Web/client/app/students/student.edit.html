@@ -1,0 +1,50 @@
+﻿<form name="studentForm" novalidate>
+    <div class="form-group" ng-class="{ 'has-error' :  studentForm.name.$invalid, 'has-success': studentForm.name.$valid  }">
+        <label for="name">
+            Name
+        </label>
+        <input  type="text"
+                name="name"
+                placeholder="Full Name"
+                class="form-control"
+                ng-model="$ctrl.student.fullName"
+               ng-pattern="/ /"
+                required />
+        <div class="help-block" ng-messages="studentForm.name.$error">
+            <p ng-message="required">Name is required.</p>
+        </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' :  studentForm.birthDate.$invalid, 'has-success': studentForm.birthDate.$valid  }">
+        <label for="roomNumber">
+            Date of Birth
+        </label>
+        <swrt-date-picker field="birthDate"
+                          name="birthDate"
+                          placeholder="Date Of Birth"
+                          ng-model="$ctrl.student.birthDate"
+                          datepicker-options="$ctrl.dateOptions"
+                          ng-required="true">
+        </swrt-date-picker>
+        <div class="help-block" ng-messages="studentForm.birthDate.$error">
+            <p ng-message="required">Date of birth is required.</p>
+        </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' :  studentForm.gpa.$invalid, 'has-success': studentForm.gpa.$valid  }">
+        <label for="gpa">
+            GPA
+        </label>
+        <input type="number"
+               name="gpa"
+               placeholder="GPA"
+               class="form-control"
+               ng-model="$ctrl.student.gpa"
+               required
+               min="0"
+               max="4" />
+        <div class="help-block" ng-messages="studentForm.gpa.$error">
+            <p ng-message="required">GPA is required.</p>
+            <p ng-message="min">GPA cannot be less than zero.</p>
+            <p ng-message="max">GPA cannot be more than 4.0.</p>
+        </div>
+    </div>
+</form>

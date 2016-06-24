@@ -97,8 +97,6 @@
   <ItemGroup>
     <Content Include="client\app\app.module.js" />
     <Content Include="client\app\common\common.module.js" />
-    <Content Include="client\app\common\dialogs.js" />
-    <Content Include="client\app\common\notifications.module.js" />
     <Content Include="client\app\courses\course.delete.dialog.html" />
     <Content Include="client\app\courses\course.delete.dialog.js" />
     <Content Include="client\app\courses\course.delete.dialog.spec.js" />
@@ -108,16 +106,13 @@
     <Content Include="client\app\courses\course.edit.html" />
     <Content Include="client\app\courses\course.edit.js" />
     <Content Include="client\app\courses\course.edit.spec.js" />
-    <Content Include="client\app\courses\course.students.html" />
-    <Content Include="client\app\courses\course.students.js" />
     <Content Include="client\app\common\notifications.js" />
-    <Content Include="client\app\common\_config.js" />
     <Content Include="client\app\courses\course.view.html" />
     <Content Include="client\app\courses\course.view.js" />
     <Content Include="client\app\courses\courses.js" />
     <Content Include="client\app\courses\courses.spec.js" />
     <Content Include="client\app\courses\courses.html" />
-    <Content Include="client\app\directives\directives.modules.js" />
+    <Content Include="client\app\directives\directives.module.js" />
     <Content Include="client\app\directives\footer.js" />
     <Content Include="client\app\directives\footer.spec.js" />
     <Content Include="client\app\directives\header.js" />
@@ -131,6 +126,7 @@
     <Content Include="client\app\services\course.resource.js" />
     <Content Include="client\app\services\data.transform.js" />
     <Content Include="client\app\services\data.transform.spec.js" />
+    <Content Include="client\app\common\dialogs.js" />
     <Content Include="client\app\services\http.client.js" />
     <Content Include="client\app\services\http.client.spec.js" />
     <Content Include="client\app\services\resource.js" />
@@ -140,6 +136,18 @@
     <Content Include="client\app\services\student.resource.spec.js" />
     <Content Include="client\app\services\teachers.resource.js" />
     <Content Include="client\app\services\teachers.resource.spec.js" />
+    <Content Include="client\app\students\course.students.html" />
+    <Content Include="client\app\students\course.students.js" />
+    <Content Include="client\app\students\student.delete.dialog.html" />
+    <Content Include="client\app\students\student.delete.dialog.js" />
+    <Content Include="client\app\students\student.delete.dialog.spec.js" />
+    <Content Include="client\app\students\student.edit.dialog.html" />
+    <Content Include="client\app\students\student.edit.dialog.js" />
+    <Content Include="client\app\students\student.edit.dialog.spec.js" />
+    <Content Include="client\app\students\student.edit.html" />
+    <Content Include="client\app\students\student.edit.js" />
+    <Content Include="client\app\students\student.view.html" />
+    <Content Include="client\app\students\student.view.js" />
     <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.eot" />
     <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.svg" />
     <Content Include="client\assets\vendor\angular-ui-grid\ui-grid.ttf" />
@@ -162,8 +170,6 @@
     <Content Include="karma.conf.js" />
     <Content Include="packages.config" />
     <Content Include="package.json" />
-    <Content Include="client\dist\app.min.js.map" />
-    <Content Include="client\dist\vendors.min.js.map" />
     <Content Include="client\json\courses.json" />
     <Content Include="client\app\directives\date.picker.js" />
     <None Include="Properties\Settings.settings">

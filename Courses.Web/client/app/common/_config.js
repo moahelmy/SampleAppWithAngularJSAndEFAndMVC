@@ -3,5 +3,6 @@
         appPath: '/client/app/',
         directivesPath: '/client/app/directives/',
         courses: '/client/app/courses/',
+        students: '/client/app/students/',
     }
 };

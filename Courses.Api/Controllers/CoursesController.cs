@@ -23,7 +23,7 @@ namespace Courses.Api.Controllers
             _mapper = mapper;
         }
 
-        [Route("")]        
+        [Route("")]
         public IEnumerable<CourseViewModel> Get()
         {
             return _coursesService.ListAll().Select(x => _mapper.Map<CourseDetails, CourseViewModel>(x)).ToList();
@@ -38,6 +38,7 @@ namespace Courses.Api.Controllers
         }
 
         [Route("{id:Guid}/students")]
+        [HttpGet]
         public IHttpActionResult Students(Guid id)
         {
             var result = _studentsService.GetCourseStudents(id);
@@ -45,7 +46,7 @@ namespace Courses.Api.Controllers
             {
                 return Ok(result.Return.Select(x => _mapper.Map<StudentDetails, StudentViewModel>(x)).ToList());
             }
-            return ResultToHttpActionResult(result);            
+            return ResultToHttpActionResult(result);
         }
 
         [Route("")]

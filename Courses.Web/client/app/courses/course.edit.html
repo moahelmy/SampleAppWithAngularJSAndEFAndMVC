@@ -8,8 +8,9 @@
                name="name"
                placeholder="Course Name"
                class="form-control"
-               ng-model="$ctrl.course.name" />
-        <div class="help-block" ng-messages="courseFrom.name.$error">
+               ng-model="$ctrl.course.name"
+               required />
+        <div class="help-block" ng-messages="courseForm.name.$error">
             <p ng-message="required">Course is required.</p>
         </div>
     </div>
@@ -19,11 +20,12 @@
             Building Number
         </label>
         <input type="text"
-               name="name"
+               name="buildingNumber"
                placeholder="Building Number"
                class="form-control"
-               ng-model="$ctrl.course.buildingNumber" />
-        <div class="help-block" ng-messages="courseFrom.buildingNumber.$error">
+               ng-model="$ctrl.course.buildingNumber"
+               required />
+        <div class="help-block" ng-messages="courseForm.buildingNumber.$error">
             <p ng-message="required">Building number is required.</p>
         </div>
     </div>
@@ -33,11 +35,12 @@
             Room Number
         </label>
         <input type="text"
-               name="name"
+               name="roomNumber"
                placeholder="Room Number"
                class="form-control"
-               ng-model="$ctrl.course.roomNumber" />
-        <div class="help-block" ng-messages="courseFrom.roomNumber.$error">
+               ng-model="$ctrl.course.roomNumber"
+               required />
+        <div class="help-block" ng-messages="courseForm.roomNumber.$error">
             <p ng-message="required">Room number is required.</p>
         </div>
     </div>
@@ -66,10 +69,11 @@
                        name="teacherName"
                        class="form-control"
                        placeholder="Teacher Name"
-                       ng-model="$ctrl.course.teacherName" />
+                       ng-model="$ctrl.course.teacherName"
+                       required />
             </div>
         </div>
-        <div class="help-block" ng-messages="courseFrom.teacherName.$error">
+        <div class="help-block" ng-messages="courseForm.teacherName.$error">
             <p ng-message="required">Teacher is required.</p>
         </div>
     </div>

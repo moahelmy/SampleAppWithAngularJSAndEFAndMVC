@@ -8,47 +8,69 @@ var isTrue = function (val) {
 };
 
 /*
+ * This bundles list of files into one minimified file.
+ * It does concatenate, minmify, annotate angular files, and create source maps for the files.
+ * {
+ *      files: list of files
+ *      dest: destination file without extension
+ *      options: described below
+ * }
  * opts
  * {
  *      debug: use not minimied version of app code
  *      compile: whether to compile js with jshint or not
+ *      annotate:  whether to annotate angular files or not
  *      sourceMapsOpts :{
  *          use: whether to use sourcemaps or not
- *          concat: whether to concat before creating source maps or not.
+ *          concat: whether to concat before creating source maps or not
  *      }
  * }
  */
-//  opts
-//  {
-//      compile: whether to compile js with jshint or not
-//      sourceMapsOpts :{
-//          use: whether to use sourcemaps or not
-//          concat: whether to concat before creating source maps or not.
-//      }
-//  }
 var bundle = function(files, dest, opts) {
 
     opts = opts || {};
     var shouldCompile = isTrue(opts.compile);
-    var smaps = opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use);
-    var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;
+    var annotate = isTrue(opts.annotate);
+    var debug = opts.debug === true;
+    var smaps = !debug && (opts.sourceMapsOpts === undefined || isTrue(opts.sourceMapsOpts.use));
+    var shouldConcat = !opts.sourceMapsOpts || opts.sourceMapsOpts.concat;    
     return gulp.src(files)
             .pipe($.if(shouldCompile, $.eslint()))
             .pipe($.if(shouldCompile, $.eslint.format()))
             .pipe($.if(shouldCompile, $.eslint.failAfterError()))
-            .pipe($.if(smaps && shouldConcat, $.concat(dest + '.js')))
-            .pipe($.if(opts.debug === true && smaps && shouldConcat, gulp.dest('.')))
-            .pipe($.if(smaps && shouldConcat, $.ngAnnotate()))
+            .pipe($.if(smaps && shouldConcat, $.concat(dest + '.js')))            
+            .pipe($.if(smaps && shouldConcat && annotate, $.ngAnnotate()))
             .pipe($.if(smaps, $.sourcemaps.init({ loadMaps: true })))
-            .pipe($.if(!(smaps && shouldConcat), $.concat(dest + '.js')))
-            .pipe($.if(opts.debug === true && !(smaps && shouldConcat), gulp.dest('.')))
-            .pipe($.if(!(smaps && shouldConcat), $.ngAnnotate()))
-            .pipe($.uglify())
-            .pipe($.if(smaps, $.rename({ suffix: '.min' })))
+            .pipe($.if(!(smaps && shouldConcat), $.concat(dest + '.js')))            
+            .pipe($.if(!(smaps && shouldConcat) && annotate, $.ngAnnotate()))
+            .pipe($.if(!debug, $.uglify()))
+            .pipe($.rename({ suffix: '.min' }))
             .pipe($.if(smaps, $.sourcemaps.write('./')))
             .pipe(gulp.dest('.'));
 };
 
+/*
+ * Concatenate and minify css files
+ * {
+ *      cssList: list of files to be processed
+ *      dest: destination file without extension
+ * }
+ */
+var bundleCss = function (cssList, dest) {
+    return gulp.src(cssList)
+        .pipe($.concat(dest + '.min.css'))
+        .pipe($.cssmin())
+        .pipe(gulp.dest('.'));
+};
+/*
+ * Use broweserify to bundle files
+ * {
+*       mainFile: the entry file
+*       dest: the destination file without extension
+*       shouldWatch: to determine whether to use watchify or browserify
+*       debug: in debug mode, the concatenated file will be written to disk
+*  }
+ */
 var browserify = function (mainFile, dest, shouldWatch, debug) {
     var watchify = require('watchify'),
         browserify = require('browserify'),
@@ -89,7 +111,8 @@ var browserify = function (mainFile, dest, shouldWatch, debug) {
         }
         return relativeUrl;
     }
-
+    
+    var debug = debug === true;    
     return $.if(shouldWatch, watchify(browserify(mainFile, opt)), browserify(mainFile, opt))
         .transform(browserifyCss, {
             autoInject: true,
@@ -99,26 +122,60 @@ var browserify = function (mainFile, dest, shouldWatch, debug) {
         .bundle()
         .on('error', gutil.log.bind(gutil, 'Browserify Error'))
         .pipe(source(dest + '.js'))
-        .pipe(buffer())
-        .pipe($.if(debug === true, gulp.dest('.')))
-        .pipe($.sourcemaps.init({ loadMaps: true }))
+        .pipe(buffer())        
+        .pipe($.if(!debug, $.sourcemaps.init({ loadMaps: true })))
             .pipe($.uglify())
+            .pipe($.if(!debug, $.uglify()))
             .pipe($.rename({ suffix: '.min' }))
-        .pipe($.sourcemaps.write('./'))
+        .pipe($.if(!debug, $.sourcemaps.write('./')))
         .pipe(gulp.dest('.'));
 };
-
-function compile(files) {
+/*
+ * Compile code with JShint and check styles with JSCS
+ */
+function compileWithJSHint(files) {
 
     return gulp.src(files)
-        pipeline.pipe($.jshint())
+        .pipeline.pipe($.jshint())
         .pipe($.jshint.reporter('jshint-stylish', { verbose: true }))
         .pipe($.jshint.reporter('fail'))
         .pipe($.jscs());
-};
+}
+
+/**
+ * Log a message or series of messages using chalk's blue color.
+ * Can pass in a string, object or array.
+ */
+function log(msg) {
+    if (typeof (msg) === 'object') {
+        for (var item in msg) {
+            if (msg.hasOwnProperty(item)) {
+                $.util.log($.util.colors.blue(msg[item]));
+            }
+        }
+    } else {
+        $.util.log($.util.colors.blue(msg));
+    }
+}
+
+/*
+ * Get directories of given path
+ */
+function getFolders(dir) {
+    var fs = require('fs'),
+        path = require('path');
+    
+    return fs.readdirSync(dir)
+      .filter(function (file) {
+          return fs.statSync(path.join(dir, file)).isDirectory();
+      });
+}
 
 module.exports = {
     bundle: bundle,
+    bundleCss: bundleCss,
     browserify: browserify,
-    compile: compile
+    compileWithJSHint: compileWithJSHint,
+    log: log,
+    getFolders: getFolders
 };

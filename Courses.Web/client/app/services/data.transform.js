@@ -10,7 +10,7 @@
 
             for (var prop in data) {
                 if (data.hasOwnProperty(prop)) {
-                    var newPropName = _lowerFirstLetter(prop);
+                    var newPropName = _lower(prop);
                     var splitted = newPropName.split(/[\s-_]+/);
                     for (var i = 1; i < splitted.length; i++) {
                         splitted[i] = _upperFirstLetter(splitted[i]);
@@ -23,8 +23,18 @@
             return obj;
         }
 
-        function _lowerFirstLetter(val) {
+        function _lower(val) {
+            if (_allUpper(val))
+                return val.toLowerCase();
             return val !== '' && val.charAt(0).toLowerCase() + val.substring(1);
+        }
+
+        function _allUpper(value) {
+            for (var i = 0; i < value.length; i++) {
+                if (value.charAt(i) !== value.charAt(i).toUpperCase())
+                    return false;
+            }
+            return true;
         }
 
         function _upperFirstLetter(val) {

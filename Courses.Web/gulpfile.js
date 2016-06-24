@@ -2,38 +2,35 @@
     helper = require('./gulp.helper'),
     gulp = require('gulp'),
     gutil = require('gulp-util'),
-    // del files
+    // delete files
     rimraf = require('rimraf'),
-    // obvious
-    concat = require('gulp-concat'),
-    cssmin = require('gulp-cssmin'),
-    taskListing = require('gulp-task-listing'),
-    $ = require('gulp-load-plugins')({ lazy: true });
+    // loading plugins
+    $ = require('gulp-load-plugins')({ lazy: false });
 
 // styles
 
 gulp.task('clean:css', function (cb) {
     log('Deleting ' + config.css.dest + '*.css* ...');
-    rimraf(config.css.dest + '*.css*', cb);
+    return rimraf(config.css.dest + '*.css*', cb);
 });
 
-gulp.task('styles', ['clean:css'], function () {    
+gulp.task('styles', ['clean:css'], function () {
     log('Minifying styles into ' + config.css.dest + ' ...');
     return gulp.src(config.cssList())
-        .pipe(concat(config.css.dest + '.min.css'))
-        .pipe(cssmin())
+        .pipe($.concat(config.css.dest + '.min.css'))
+        .pipe($.cssmin())
         .pipe(gulp.dest('.'));
 });
 
 gulp.task('watch:css', function () {
-    return gulp.watch(config.css.src, ['styles']);
+    return gulp.watch(config.cssList(), ['styles']);
 });
 
 // javascript
 
 gulp.task('clean:js', function (cb) {
     log('Deleting ' + config.app.dest + '*.js* ...');
-    rimraf(config.app.dest + '*.js*', cb);
+    return rimraf(config.app.dest + '*.js*', cb);
 });
 
 gulp.task('scripts', ['clean:js'], function () {
@@ -42,14 +39,14 @@ gulp.task('scripts', ['clean:js'], function () {
 });
 
 gulp.task('watch:js', function () {
-    return gulp.watch(config.app.src, ['scripts']);
+    return gulp.watch(config.appList(), ['scripts']);
 });
 
 // vendors
 if (config.bundleVendors) {
     gulp.task('clean:vendors', function (cb) {
         log('Deleting ' + config.vendors.dest + '.*.js* ...');
-        rimraf(config.vendors.dest + '.*.js*', cb);
+        return rimraf(config.vendors.dest + '.*.js*', cb);
     });
 
     gulp.task('vendors', ['clean:vendors'], function () {
@@ -75,7 +72,7 @@ if (config.bundleVendors) {
 
 // combined tasks
 
-gulp.task('help', taskListing);
+gulp.task('help', $.taskListing);
 
 gulp.task('clean', ['clean:js', 'clean:css']);
 

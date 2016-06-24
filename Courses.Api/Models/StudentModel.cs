@@ -10,8 +10,8 @@ namespace Courses.Api.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime? BirthDate { get; set; }
-        [Required]       
-        [Range(0, double.MaxValue)] 
+        [Required]
+        [Range(0, double.MaxValue)]
         public double GPA { get; set; }
         [Required]
         public Guid? CourseId { get; set; }

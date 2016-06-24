@@ -8,7 +8,7 @@
         });
 
 
-    function CoursesListController(uiGridConstants, Course, $uibModal, $templateCache) {
+    function CoursesListController(uiGridConstants, Course, $uibModal, dialog) {
         'ngInject';
 
         var vm = this;
@@ -20,6 +20,10 @@
         vm.add = addCourse;
         vm.edit = editCourse;
         vm.remove = removeCourse;
+
+        vm.showStudents = function () {
+            return vm.course && vm.course.id;
+        };
 
         _init();
         /// ============== ///
@@ -61,21 +65,16 @@
 
         function _openDialog(course, viewName, ctrl) {
             var tUrl = app.config.courses + (viewName || 'course.edit.dialog.html');
-            $templateCache.remove(tUrl);
-            return $uibModal.open({
-                animation: true,
+            return dialog({
                 templateUrl: tUrl,
                 controller: ctrl || 'CourseEditDialogController',
                 controllerAs: 'vm',
-                keyboard: true,
-                backdrop: 'static',
-                size: 'lg',
                 resolve: {
-                    course: function () {
-                        return course || null;
+                        course: function () {
+                            return course || null;
+                        }
                     }
-                }
-            })
+            });
         }
 
         function _initCoursesGrid() {
@@ -103,8 +102,7 @@
             vm.coursesGrid.appScopeProvider = vm;
             vm.coursesGrid.onRegisterApi = function (gridApi) {
                 gridApi.selection.on.rowSelectionChanged(null, function (row) {
-                    vm.course = row.entity;
-                    vm.students = vm.course.students;
+                    vm.course = row.isSelected && row.entity;
                 });
             };
         }

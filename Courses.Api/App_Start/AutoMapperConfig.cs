@@ -23,7 +23,7 @@ namespace Courses.Api
                 cfg.CreateMap<CourseModel, CourseDetails>()
                     .ForMember(m => m.Teacher, opt => opt.MapFrom(ct => new IdNamePair { Id = ct.TeacherId ?? Guid.Empty, Name = ct.TeacherName }));
             });
-            
+
             return Configuration;
         }
     }

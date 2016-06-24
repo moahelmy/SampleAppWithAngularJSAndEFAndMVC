@@ -54,7 +54,7 @@ namespace Courses.Services
             UpdateEntityFromDto(entity, value);
             _repository.UnitOfWork.SaveChanges();
 
-            return new Result<T>() { Return = value };
+            return new Result<T>() { Return = ToDto(entity) };
         }
 
         public virtual IResult<T> Delete(Guid id)

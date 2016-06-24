@@ -29,7 +29,7 @@ var distRoot = 'client/dist/';
 module.exports = {
     debug: true,
     bundleVendors: true,
-    compile: true,
+    compile: false,
     browserify: true,
     log: true,
     vendors: {
@@ -49,7 +49,7 @@ module.exports = {
                     appRoot + '**/*.min.js',
                     appRoot + '**/*.spec.js',
                 ],
-        dest: 'client/dist/app',
+        dest: distRoot + 'app',
     },
     css: {
         include: [stylesRoot + '**/*.css'],

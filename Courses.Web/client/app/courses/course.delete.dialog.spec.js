@@ -4,7 +4,7 @@
     describe('delete courses', function () {
         var Course, ctrl, $httpBackend, $uibModalInstance;
 
-        beforeEach(module('courses.main'));        
+        beforeEach(module('courses.main'));
         angular.module('courses.settings', []);
         beforeEach(module(function ($provide) {
             $provide.factory('settings', function () {

@@ -2,10 +2,10 @@
     'use strict';
 
     angular.module('courses.main')
-        .controller('CourseDeleteDialogController', EditCoursesController);
+        .controller('CourseDeleteDialogController', DeleteCourseDialogController);
 
 
-    function EditCoursesController(Course, $uibModalInstance, course) {
+    function DeleteCourseDialogController(Course, $uibModalInstance, course) {
         'ngInject';
 
         var vm = this;

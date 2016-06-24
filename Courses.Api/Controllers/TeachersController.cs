@@ -13,7 +13,7 @@ namespace Courses.Api.Controllers
     [RoutePrefix("api/teachers")]
     public class TeachersController : BaseApiController
     {
-        private readonly ITeachersService _teachersService;        
+        private readonly ITeachersService _teachersService;
 
         public TeachersController(ITeachersService teachersService)
         {
@@ -27,7 +27,7 @@ namespace Courses.Api.Controllers
             {
                 Id = x.Id,
                 Name = x.Name,
-            });
+            }).ToList();
         }
 
         [Route("{id:Guid}")]
@@ -60,7 +60,7 @@ namespace Courses.Api.Controllers
             try
             {
                 var result = _teachersService.Update(id, name);
-                return ResultToHttpActionResult(result);                
+                return ResultToHttpActionResult(result);
             }
             catch (FullNameIsEmptyOrSingleException)
             {

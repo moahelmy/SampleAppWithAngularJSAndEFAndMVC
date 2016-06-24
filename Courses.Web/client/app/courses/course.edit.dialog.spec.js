@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    describe('add/edit courses', function () {
+    describe('add/edit course', function () {
         var Course, ctrl, $httpBackend, $uibModalInstance;
 
         beforeEach(module('courses.main'));

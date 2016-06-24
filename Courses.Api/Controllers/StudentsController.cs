@@ -24,17 +24,18 @@ namespace Courses.Api.Controllers
         [Route("")]
         public IEnumerable<StudentViewModel> Get()
         {
-            return _studentsService.All().Select(x => Mapper.Map<StudentDetails, StudentViewModel>(x)).ToList();
+            return _studentsService.All().Select(x => _mapper.Map<StudentDetails, StudentViewModel>(x)).ToList();
         }
 
         [Route("{id:Guid}")]
         public StudentViewModel Get(Guid id)
         {
             var student = _studentsService.Get(id);
-            return student == null ? null : Mapper.Map<StudentDetails, StudentViewModel>(student);
+            return student == null ? null : _mapper.Map<StudentDetails, StudentViewModel>(student);
         }
 
         [Route("{studentId:Guid}/courses")]
+        [HttpGet]
         public StudentViewModel Courses(Guid id)
         {
             throw new NotImplementedException();
@@ -48,15 +49,15 @@ namespace Courses.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = _studentsService.Create(Mapper.Map<StudentModel, StudentDetails>(student), student.CourseId.Value);
-            return ResultToHttpActionResult(result);
+            var result = _studentsService.Create(_mapper.Map<StudentModel, StudentDetails>(student), student.CourseId.Value);
+            return ResultToHttpActionResult(result, x => _mapper.Map<StudentDetails, StudentViewModel>(x));
         }
 
         [Route("enrol/{studentId:Guid}/{courseId:Guid}")]
         public IHttpActionResult Put(Guid studentId, Guid courseId)
         {
             var result = _studentsService.Enrol(studentId, courseId);
-            return ResultToHttpActionResult(result);
+            return ResultToHttpActionResult(result, x => _mapper.Map<StudentDetails, StudentViewModel>(x));
         }
 
         [Route("{id:Guid}")]
@@ -66,10 +67,10 @@ namespace Courses.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var studentDetails = Mapper.Map<StudentModel, StudentDetails>(student);
+            var studentDetails = _mapper.Map<StudentModel, StudentDetails>(student);
             studentDetails.Id = id;
             var result = _studentsService.Update(studentDetails);
-            return ResultToHttpActionResult(result);
+            return ResultToHttpActionResult(result, x => _mapper.Map<StudentDetails, StudentViewModel>(x));
         }
 
         [Route("remove/{studentId:Guid}/{courseId:Guid}")]
@@ -77,14 +78,14 @@ namespace Courses.Api.Controllers
         public IHttpActionResult RemoveStudentFromCourse(Guid studentId, Guid courseId)
         {
             var result = _studentsService.RemoveStudentFromCourse(studentId, courseId);
-            return ResultToHttpActionResult(result);
+            return ResultToHttpActionResult(result, x => _mapper.Map<StudentDetails, StudentViewModel>(x));
         }
 
         [Route("{id:Guid}")]
         public IHttpActionResult Delete(Guid id)
         {
             var result = _studentsService.Delete(id);
-            return ResultToHttpActionResult(result);
+            return ResultToHttpActionResult(result, x => _mapper.Map<StudentDetails, StudentViewModel>(x));
         }
     }
 }

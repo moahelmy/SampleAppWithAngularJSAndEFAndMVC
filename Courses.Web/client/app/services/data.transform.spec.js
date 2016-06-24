@@ -53,5 +53,12 @@
 
             expect(data[0].name).toEqual(test[0].Name);
         });
+
+        it('should lowercase uppered case properties', function () {
+            var test = [{ NAME: 'test' }];
+            var data = transformData(test);
+
+            expect(data[0].name).toEqual(test[0].NAME);
+        });
     });
 })();

@@ -9,6 +9,7 @@
 			'courses.settings',
 			'courses.notifications',
 			'courses.services',
+            'course.dialogs',
 
 			/* App directives */
 			'courese.directives',

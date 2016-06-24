@@ -2,7 +2,7 @@
     "use strict";
 
     angular
-        .module('courese.directives.forms', ['ngAnimate', 'ui.bootstrap'])
+        .module('courese.directives.form')
         .directive('swrtDatePicker', datePicker);
 
     function datePicker() {
